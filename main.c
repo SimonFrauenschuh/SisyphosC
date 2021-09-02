@@ -1,5 +1,7 @@
 // Version 0.1
 // Copyright @Simon Frauenschuh
+// Username: SimonFrauenschuh
+// Password Token: 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
 
 #include "pca9685.h"
 
@@ -173,7 +175,7 @@ void calibrateGyro() {
 		getGyroDegree();
 		correctAngleCalibrationUncallable();
 
-		printf("Uncorrected yAxis: %f\n", gyroscopeYReal);
+		printf("Uncorrected yAxis: %f     ", gyroscopeYReal);
 		// Tests, wether the measurement was to low or to high
 		while ((gyroscopeYReal - correctionQuality * 10) > i) {
 			gyroscopeYReal -= correctionQuality;
@@ -204,7 +206,7 @@ void calibrateGyro() {
 		getGyroDegree();
 		correctAngleCalibrationUncallable();
 
-		//printf("Uncorrected xAxis: %f\n", gyroscopeXReal);
+		printf("Uncorrected xAxis: %f     ", gyroscopeXReal);
 		// Tests, wether the measurement was to low or to high
 		while ((gyroscopeXReal - correctionQuality * 10) > i) {
 			gyroscopeXReal -= correctionQuality;
@@ -214,7 +216,7 @@ void calibrateGyro() {
 			gyroscopeXReal += correctionQuality;
 			correctionGyroscopeAllX[i / correctionSteps - 1][0]++;
 		}
-		//printf("Corrected xAxis: %f\n", gyroscopeXReal);
+		printf("Corrected xAxis: %f\n", gyroscopeXReal);
 	}
 	setServoDegree(1, 0);
 	

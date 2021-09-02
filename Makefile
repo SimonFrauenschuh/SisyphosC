@@ -36,17 +36,13 @@ LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=	servo.c main.c
+SRC	=	main.c
 
 OBJ	=	$(SRC:.c=.o)
 
 BINS=	$(SRC:.c=)
 
 all:	$(BINS)
-
-servo:	servo.o
-	@echo [link]
-	@$(CC) -o $@ servo.o $(LDFLAGS) $(LDLIBS)
 	
 main:	main.o
 	@echo [link]
