@@ -23,8 +23,8 @@
 # You can view the contents of the licence at <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+# Note that the Makefile doesn't recompiles the librarys, if a .o file exists
 
-#DEBUG	= -g -O0
 DEBUG	= -O3
 CC	= gcc
 INCLUDE	= -I/usr/local/include
