@@ -31,7 +31,7 @@ void firstSetupGyro() {
 }
 
 // Reads raw values from the Gyroscope
-int read_word_2c(int addr) {
+int readWord2c(int addr) {
 	// Some logik from the Internet
 	int val;
 	val = wiringPiI2CReadReg8(connectionGyroscope, addr);
@@ -78,9 +78,9 @@ void correctAngle() {
 
 // Reads from the Gyroscope and writes the "real" angles to the given variables
 void getGyroDegree() {
-	double accelerationX = read_word_2c(0x3B) / 16384.0;
-	double accelerationY = read_word_2c(0x3D) / 16384.0;
-	double accelerationZ = read_word_2c(0x3F) / 16384.0;
+	double accelerationX = readWord2c(0x3B) / 16384.0;
+	double accelerationY = readWord2c(0x3D) / 16384.0;
+	double accelerationZ = readWord2c(0x3F) / 16384.0;
 	
 	gyroscopeXReal = get_x_rotation(accelerationX, accelerationY, accelerationZ) - gyroscopeXOffset;
 	gyroscopeYReal = get_y_rotation(accelerationX, accelerationY, accelerationZ) - gyroscopeYOffset;
