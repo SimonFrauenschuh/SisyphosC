@@ -9,7 +9,7 @@
 // Note that the Makefile doesn't recompiles the librarys, if a .o file exists
  
 // Username: SimonFrauenschuh
-// Password Token: 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
+// Password Token: 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
 
 #include "pca9685.h"
 #include "lib/servo.h"
