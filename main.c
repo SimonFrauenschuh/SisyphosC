@@ -64,13 +64,14 @@ int main(int argc, char **argv) {
 	int servoPositionX = 0;
 	int servoPositionY = 0;
 	
-	setServoDegreeSmooth(0, 0);
 	setServoDegree(0, 20);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
+	
 	setServoDegree(0, -20);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
+	
 	setServoDegree(0, 0);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
