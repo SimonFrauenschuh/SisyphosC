@@ -6,8 +6,6 @@
  * cannot be prosecuted for it
  */
  
-// Note that the Makefile doesn't recompiles the librarys, if a .o file exists
- 
 // Username: SimonFrauenschuh
 // Password Token: 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
 

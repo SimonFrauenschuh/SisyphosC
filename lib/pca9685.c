@@ -24,6 +24,8 @@
  **************************************************************************
  */
 
+// https://github.com/Reinbert/pca9685
+
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 

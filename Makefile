@@ -36,7 +36,7 @@ LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=	main.c
+SRC	=	ballonplate.c
 
 OBJ	=	$(SRC:.c=.o)
 
@@ -44,9 +44,9 @@ BINS=	$(SRC:.c=)
 
 all:	$(BINS)
 	
-main:	main.o
+ballonplate:	ballonplate.o
 	@echo [link]
-	@$(CC) -o $@ main.o $(LDFLAGS) $(LDLIBS)
+	@$(CC) -o $@ ballonplate.o $(LDFLAGS) $(LDLIBS)
 	
 .c.o:
 	@echo [CC] $<

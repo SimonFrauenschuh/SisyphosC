@@ -1,7 +1,0 @@
-1) Activate I2C Protokoll
-2) cmd-line: "sudo apt install wiringpi"
-3.0) For Lib: cmd-line: navigate to lib folder and "sudo make install"
-3.1) For Program: cmd-line: navigate to c-File (Folder) and "make"
-4) cmd-line: "./filename" (Without ".c")
-
-https://github.com/Reinbert/pca9685
