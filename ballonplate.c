@@ -13,8 +13,6 @@
 #include "lib/servo.h"
 #include "lib/gyroscope.h"
 
-#include <wiringPi.h>
-#include <wiringPiI2C.h>
 #include <stdio.h>
 #include <stdlib.h>
 

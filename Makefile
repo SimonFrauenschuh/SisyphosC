@@ -25,42 +25,25 @@
 
 # Note that the Makefile doesn't recompiles the librarys, if a .o file exists
 
-DEBUG	= -O3
-CC	= gcc
 INCLUDE	= -I/usr/local/include
 CFLAGS	= $(DEBUG) -Wall $(INCLUDE) -Winline -pipe
 
 LDFLAGS	= -L/usr/local/lib
 LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
+LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
+LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
 
 # Should not alter anything below this line
 ###############################################################################
 
-SRC	=	ballonplate.c
-
-OBJ	=	$(SRC:.c=.o)
-
-BINS=	$(SRC:.c=)
-
-all:	$(BINS)
-	
 ballonplate:	ballonplate.o
-	@echo [link]
-	@$(CC) -o $@ ballonplate.o $(LDFLAGS) $(LDLIBS)
+	@gcc $(LDFLAGS) $(LDLIBS) $(LDSERVO) $(LDGYRO) $< -o $@
 	
-.c.o:
-	@echo [CC] $<
-	@$(CC) -c $(CFLAGS) $< -o $@
+ballonplate.o: ballonplate.c
+	@echo [link]
+	@gcc -c ballonplate.c
+
+.PHONY: clean
 
 clean:
-	@echo "[Clean]"
-	@rm -f $(OBJ) *~ core tags $(BINS)
-
-tags:	$(SRC)
-	@echo [ctags]
-	@ctags $(SRC)
-
-depend:
-	makedepend -Y $(SRC)
-
-# DO NOT DELETE
+	rm -f *.o ballonplate.o
