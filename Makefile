@@ -36,14 +36,14 @@ LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
 # Should not alter anything below this line
 ###############################################################################
 
+.PHONY: clean
+
+clean:
+	@rm -f *.o ballonplate.o
+	@echo [Compiled and successful]
+
 ballonplate:	ballonplate.o
 	@gcc $(LDFLAGS) $(LDLIBS) $(LDSERVO) $(LDGYRO) $< -o $@
 	
 ballonplate.o: ballonplate.c
-	@echo [link]
 	@gcc -c ballonplate.c
-
-.PHONY: clean
-
-clean:
-	rm -f *.o ballonplate.o
