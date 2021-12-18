@@ -8,6 +8,7 @@
 ############################################################
 
 # Note that the Makefile doesn't recompiles the librarys, if a .o file exists
+# Cmd-statement "make && make clean"
 
 
 # Including all the needed librarys
@@ -15,16 +16,16 @@ LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
 LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
 LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
 
-# Delete the ".o" files
-.PHONY: clean
-
-clean:
-	@rm -f *.o ballonplate.o
-	@echo [Compiled and successful]
-
 # Two-Step-Compiling
 ballonplate:	ballonplate.o
 	@gcc $(LDLIBS) $(LDSERVO) $(LDGYRO) $< -o $@
 	
 ballonplate.o: ballonplate.c
 	@gcc -c ballonplate.c
+
+# Delete the ".o" files
+.PHONY: clean
+
+clean:
+	@rm -f *.o ballonplate.o
+	@echo [Compiled and successful]

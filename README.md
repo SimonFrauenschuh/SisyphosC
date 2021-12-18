@@ -13,10 +13,11 @@
 ## Compile the program after changes
 1. For changes in the main program
 - Navigate to ```BallOnPlateC```
-- Execute ```make```
-2. For changes in the library
+- Execute ```make && make clean```
+2. For changes in the PCA9658 file
 - Navigate to ```BallOnPlateC/lib```
 - Execute ```make```
 
 ### Note!
-**The Makefile doesn't recompile the librarys, if a ".o" file exists. New written librarys or files need to be included in the correct makefile.**
+**The Y-Axis is the one, controlled by the lower Servo (Channel 0). The X-Axis ist controlled by the higher Servo (Channel 1).
+The Makefile doesn't recompile the librarys, if a ".o" file exists. New written librarys or files need to be included in the correct makefile (in most cases the one located under ```.../BallOnPlateC/```).**

@@ -47,7 +47,7 @@ void getServoPosition(int *servoPositionX, int *servoPositionY) {
 	}
 }
 
-int main(int argc, char **argv) {
+int main() {
 	// Connect and calibrate Servos
 	firstSetupServo();
 	setServoNull();
@@ -60,17 +60,18 @@ int main(int argc, char **argv) {
 	int servoPositionX = 0;
 	int servoPositionY = 0;
 	
-	setServoDegree(0, 20);
-	getServoPosition(&servoPositionX, &servoPositionY);
-	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
 	
 	setServoDegree(0, -20);
 	getServoPosition(&servoPositionX, &servoPositionY);
-	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
-	
-	setServoDegree(0, 0);
+	printf("xDrehung1: %d    |    yDrehung1: %d\n", servoPositionX, servoPositionY);
+	/*
+	setServoDegree(0, -20);
 	getServoPosition(&servoPositionX, &servoPositionY);
-	printf("xDrehung1: %d\nyDrehung1: %d\n", servoPositionX, servoPositionY);
+	printf("xDrehung1: %d  |    yDrehung1: %d\n", servoPositionX, servoPositionY);
+	*/
+	setServoDegree(1, -20);
+	getServoPosition(&servoPositionX, &servoPositionY);
+	printf("xDrehung1: %d  |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	
 	printf("\n\nError Code: %d\n", errorCode);
 	return 0;

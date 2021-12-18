@@ -1,3 +1,5 @@
+Error Code 0: No Error occured
+
 Error Code 1: A connection to the Servo-Driver wasn't able to be created
 Error Code 2: A connection to the Gyroscope wasn't able to be created
 Error Code 3: A connection to the Touchpanel wasn't able to be created

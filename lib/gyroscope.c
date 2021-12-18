@@ -57,7 +57,7 @@ double get_x_rotation(double x, double y, double z) {
 	// Takes raw data from the Gyroscope (Given in the paramter) and turns it into degree
 	double radians;
 	radians = atan2(y, dist(x, z));
-	return -(radians * (180.0 / M_PI));
+	return (radians * (180.0 / M_PI));
 }
 
 // Corrects the measurement
@@ -98,7 +98,7 @@ void calibrateGyro() {
 	double correctionQuality = 0.5;
 	// Variable to set Quantity of Measurement (how many)
 	// Only integer divisor of 40
-	int correctionSteps = 8;
+	int correctionSteps = 8 / 2;
 	// Member-Variable to keep, how many corrections were needed individually
 	int correctionGyroscopeAllY[40 / correctionSteps];
 	

@@ -9,12 +9,12 @@ int errorCode = 0;
 #pragma once
 
 #define PIN_BASE 300
-// 577 - CHANNEL0_MIN
+// 647 - CHANNEL0_MAX
 #define CHANNEL0_MIN 140
-#define CHANNEL0_DIFF 437
-// 584 - CHANNEL1_MIN
-#define CHANNEL1_MIN 102
-#define CHANNEL1_DIFF 482
+#define CHANNEL0_DIFF 507
+// 584 - CHANNEL1_MAX
+#define CHANNEL1_MIN 145
+#define CHANNEL1_DIFF 542
 #define HERTZ 60
 
 // First initial setup (connection) for the Servos
@@ -72,26 +72,32 @@ int calculateServoPWMSignal(int channel, int degree) {
 
 // Simple Method to set a specific servo to a specific angle; without any Smoothing
 void setServoDegree(int channel, int degree) {
-	// Calculate the PWM-Signal
-	int move = calculateServoPWMSignal(channel, degree);
-	
-	// Read the previous set from Controller to calculate later the duration for waiting, until the servo is in the right position
-	int oldSet = readServoPosition(channel);
-	
-	// Move the Servo
-	pwmWrite(PIN_BASE + channel, move);
-	
-	// Calculate the waiting duration
-	int diffSet;
-	if (channel == 0) {
-		diffSet = (move - oldSet) * 2.6;
+	// If Channel 16 (all Servos) is choosen
+	if (channel == 16) {
+		setServoDegree(0, 0);
+		setServoDegree(1, 0);
 	} else {
-		diffSet = (move - oldSet) * 2.4;
-	}
-	if (diffSet > 0) {
-		delay(diffSet);
-	} else {
-		delay(-diffSet);
+		// Calculate the PWM-Signal
+		int move = calculateServoPWMSignal(channel, degree);
+	
+		// Read the previous set from Controller to calculate later the duration for waiting, until the servo is in the right position
+		int oldSet = readServoPosition(channel);
+	
+		// Move the Servo
+		pwmWrite(PIN_BASE + channel, move);
+	
+		// Calculate the waiting duration
+		int diffSet;
+		if (channel == 0) {
+			diffSet = (move - oldSet) * 2.6;
+		} else {
+			diffSet = (move - oldSet) * 2.4;
+		}
+		if (diffSet > 0) {
+			delay(diffSet);
+		} else {
+			delay(-diffSet);
+		}
 	}
 }
 
@@ -117,5 +123,5 @@ void setServoNull() {
 	printf("Setting Servos to Starting Point...\n");
 	// Set Pin = 16 to set all Channels / Servos
 	setServoDegree(16, 0);
-	delay(1000);
+	delay(500);
 }
