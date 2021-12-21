@@ -61,7 +61,7 @@ int main() {
 	int servoPositionY = 0;
 	
 	
-	setServoDegree(0, -20);
+	setServoDegree(0, 0);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d    |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	/*
@@ -69,7 +69,7 @@ int main() {
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d  |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	*/
-	setServoDegree(1, -20);
+	setServoDegree(1, 0);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d  |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	

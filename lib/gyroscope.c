@@ -97,14 +97,14 @@ void calibrateGyro() {
 	// Variable to set Quality of Correction
 	double correctionQuality = 0.5;
 	// Variable to set Quantity of Measurement (how many)
-	// Only integer divisor of 40
-	int correctionSteps = 8 / 2;
+	// Only integer divisor of 30
+	int correctionSteps = 3;
 	// Member-Variable to keep, how many corrections were needed individually
-	int correctionGyroscopeAllY[40 / correctionSteps];
+	int correctionGyroscopeAllY[30 / correctionSteps];
 	
 	
 	// Correction for yAxis
-	for (int i = correctionSteps; i <= 40; i += correctionSteps) {
+	for (int i = correctionSteps; i <= 30; i += correctionSteps) {
 		setServoDegree(0, i);
 		getGyroDegree();
 		correctAngle();
@@ -127,17 +127,17 @@ void calibrateGyro() {
 	
 	// Simple logic to get the average of all Measurements
 	int allCorrections = 0;
-	for (int i = 0; i < 40 / correctionSteps; i++) {
+	for (int i = 0; i < 30 / correctionSteps; i++) {
 		allCorrections += correctionGyroscopeAllY[i];
 	}
-	correctionGyroscopeY = allCorrections / (40 / correctionSteps);
+	correctionGyroscopeY = allCorrections / (30 / correctionSteps);
 	printf("Correction Steps yAxis: %d\n", correctionGyroscopeY);
 	
 	
 	
 	// Same as above, but for yAxis
-	int correctionGyroscopeAllX[40 / correctionSteps];
-	for (int i = correctionSteps; i <= 40; i += correctionSteps) {
+	int correctionGyroscopeAllX[30 / correctionSteps];
+	for (int i = correctionSteps; i <= 30; i += correctionSteps) {
 		setServoDegree(1, i);
 		getGyroDegree();
 		correctAngle();
@@ -160,10 +160,10 @@ void calibrateGyro() {
 	
 	// Simple logic to get the average of all Measurements
 	allCorrections = 0;
-	for (int i = 0; i < 40 / correctionSteps; i++) {
+	for (int i = 0; i < 30 / correctionSteps; i++) {
 		allCorrections += correctionGyroscopeAllX[i];
 	}
-	correctionGyroscopeX = allCorrections / (40 / correctionSteps);
+	correctionGyroscopeX = allCorrections / (30 / correctionSteps);
 	printf("Correction Steps xAxis: %d\n", correctionGyroscopeX);
 	
 }
