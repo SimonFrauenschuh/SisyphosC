@@ -16,9 +16,8 @@ void firstSetupGyro() {
 	// Connect to Gyroscope on I2C Adress 0x68
 	connectionGyroscope = wiringPiI2CSetup (0x68);
 	if (connectionGyroscope < 0) {
-		printf("Error in Gyroscope Setup\n");
 		errorCode = 2;
-		printf("\n\nError Code: %d\n", errorCode);
+		fprintf(stderr, "---ERROR 2--- Connection Gyroscope failure");
 		exit(2);
 	} else {
 		//disable sleep mode

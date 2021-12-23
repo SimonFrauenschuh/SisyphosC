@@ -26,9 +26,8 @@ void firstSetupServo() {
 	// Setup with pinbase 300 and i2c location 0x41
 	connectionServo = pca9685Setup(PIN_BASE, 0x41, HERTZ);
 	if (connectionServo < 0) {
-		printf("Error in Servo Setup\n");
 		errorCode = 1;
-		printf("\n\nError Code: %d\n", errorCode);
+		fprintf(stderr, "---ERROR 1--- Connection Servo failure");
 		exit(1);
 	} else {
 		// Reset all output, only for startup

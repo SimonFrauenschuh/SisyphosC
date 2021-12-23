@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 Simon Frauenschuh - All Rights Reserved
+/* Copyright (C) 2021 Simon Frauenschuh & Philip Jessner - All Rights Reserved
  * You may use and / or modify this code in
  * terms of private use.
  * Any caused damage or misbehaviour of any components are
@@ -12,6 +12,7 @@
 #include "pca9685.h"
 #include "lib/servo.h"
 #include "lib/gyroscope.h"
+#include "lib/touchpanel.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,20 +49,29 @@ void getServoPosition(int *servoPositionX, int *servoPositionY) {
 }
 
 int main() {
+	// Check if the user is root & connect to touchpanel
+	checkUser();
+	firstSetupTouchpanel();
+    int touchpanelPositionX = 0;
+    int touchpanelPositionY = 0;
+    
 	// Connect and calibrate Servos
 	firstSetupServo();
 	setServoNull();
-	
-	// Connect and calibrate Gyroscope
-	firstSetupGyro();
-	calibrateGyro();
-	printf("====================\nCalibration finished\n====================\n\n");
-	
 	int servoPositionX = 0;
 	int servoPositionY = 0;
 	
+	// Connect and calibrate Gyroscope
+	firstSetupGyro();
+	calibrateGyro();    
+    printf("====================\nCalibration finished\n====================\n\n");
+
+    //getTouchpanelPosition(&servoPositionX, &servoPositionY);
+    printf("X = %i\n", servoPositionX);
+    printf("Y = %i\n", servoPositionY);
 	
-	setServoDegree(0, 0);
+	
+	setServoDegree(0, 2);
 	getServoPosition(&servoPositionX, &servoPositionY);
 	printf("xDrehung1: %d    |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	/*
@@ -74,6 +84,7 @@ int main() {
 	printf("xDrehung1: %d  |    yDrehung1: %d\n", servoPositionX, servoPositionY);
 	
 	printf("\n\nError Code: %d\n", errorCode);
+	close(connectionTouchpanel);
 	return 0;
 }
 

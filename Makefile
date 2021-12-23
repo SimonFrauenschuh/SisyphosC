@@ -15,6 +15,7 @@
 LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
 LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
 LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
+LDTOUCH = -L/home/pi/Desktop/BallOnPlateC/lib/touchpanel.h
 
 # Two-Step-Compiling
 ballonplate:	ballonplate.o

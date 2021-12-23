@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 Simon Frauenschuh - All Rights Reserved
+/* Copyright (C) 2021 Simon Frauenschuh & Philip Jessner - All Rights Reserved
  * You may use and / or modify this code in
  * terms of private use.
  * Any caused damage or misbehaviour of any components are
