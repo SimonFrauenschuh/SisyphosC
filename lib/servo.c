@@ -11,7 +11,7 @@ int errorCode = 0;
 #define PIN_BASE 300
 // 647 - CHANNEL0_MAX
 #define CHANNEL0_MIN 140
-#define CHANNEL0_DIFF 517
+#define CHANNEL0_DIFF 510
 // 584 - CHANNEL1_MAX
 #define CHANNEL1_MIN 145
 #define CHANNEL1_DIFF 542
