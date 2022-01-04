@@ -96,14 +96,14 @@ void calibrateGyro() {
 	// Variable to set Quality of Correction
 	double correctionQuality = 0.5;
 	// Variable to set Quantity of Measurement (how many)
-	// Only integer divisor of 30
-	int correctionSteps = 3;
+	// Only integer divisor of 20
+	int correctionSteps = 4;
 	// Member-Variable to keep, how many corrections were needed individually
-	int correctionGyroscopeAllY[30 / correctionSteps];
+	int correctionGyroscopeAllY[20 / correctionSteps];
 	
 	
 	// Correction for yAxis
-	for (int i = correctionSteps; i <= 30; i += correctionSteps) {
+	for (int i = correctionSteps; i <= 20; i += correctionSteps) {
 		setServoDegree(0, i);
 		getGyroDegree();
 		correctAngle();
@@ -124,19 +124,19 @@ void calibrateGyro() {
 	}
 	setServoDegree(0, 0);
 	
-	// Simple logic to get the average of all Measurements
+	// Logic to get the average of all Measurements
 	int allCorrections = 0;
-	for (int i = 0; i < 30 / correctionSteps; i++) {
+	for (int i = 0; i < 20 / correctionSteps; i++) {
 		allCorrections += correctionGyroscopeAllY[i];
 	}
-	correctionGyroscopeY = allCorrections / (30 / correctionSteps);
+	correctionGyroscopeY = allCorrections / (20 / correctionSteps);
 	printf("Correction Steps yAxis: %d\n", correctionGyroscopeY);
 	
 	
 	
 	// Same as above, but for yAxis
-	int correctionGyroscopeAllX[30 / correctionSteps];
-	for (int i = correctionSteps; i <= 30; i += correctionSteps) {
+	int correctionGyroscopeAllX[20 / correctionSteps];
+	for (int i = correctionSteps; i <= 20; i += correctionSteps) {
 		setServoDegree(1, i);
 		getGyroDegree();
 		correctAngle();
@@ -157,12 +157,12 @@ void calibrateGyro() {
 	}
 	setServoDegree(1, 0);
 	
-	// Simple logic to get the average of all Measurements
+	// Logic to get the average of all Measurements
 	allCorrections = 0;
-	for (int i = 0; i < 30 / correctionSteps; i++) {
+	for (int i = 0; i < 20 / correctionSteps; i++) {
 		allCorrections += correctionGyroscopeAllX[i];
 	}
-	correctionGyroscopeX = allCorrections / (30 / correctionSteps);
+	correctionGyroscopeX = allCorrections / (20 / correctionSteps);
 	printf("Correction Steps xAxis: %d\n", correctionGyroscopeX);
 	
 }

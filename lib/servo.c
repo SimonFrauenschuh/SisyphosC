@@ -9,12 +9,10 @@ int errorCode = 0;
 #pragma once
 
 #define PIN_BASE 300
-// 647 - CHANNEL0_MAX
 #define CHANNEL0_MIN 140
 #define CHANNEL0_DIFF 510
-// 584 - CHANNEL1_MAX
-#define CHANNEL1_MIN 145
-#define CHANNEL1_DIFF 542
+#define CHANNEL1_MIN 143
+#define CHANNEL1_DIFF 532
 #define HERTZ 60
 
 // First initial setup (connection) for the Servos
@@ -69,12 +67,12 @@ int calculateServoPWMSignal(int channel, int degree) {
 	return move;
 }
 
-// Simple Method to set a specific servo to a specific angle; without any Smoothing
+// Method to set a specific servo to a specific angle; without any Smoothing
 void setServoDegree(int channel, int degree) {
 	// If Channel 16 (all Servos) is choosen
 	if (channel == 16) {
-		setServoDegree(0, 0);
-		setServoDegree(1, 0);
+		setServoDegree(0, degree);
+		setServoDegree(1, degree);
 	} else {
 		// Calculate the PWM-Signal
 		int move = calculateServoPWMSignal(channel, degree);
