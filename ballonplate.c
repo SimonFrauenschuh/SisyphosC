@@ -67,7 +67,7 @@ void moveToPoint(int xEst, int yEst)
 
 	double servoPositionX = 0;
 	double servoPositionY = 0;
-	int delay_ms = 2;
+	int delay_ms = 20;
 	while ((touchpanelPositionX < (xEst * 0.98)) || (touchpanelPositionX > (xEst * 1.02)))
 	{
 		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
@@ -79,31 +79,31 @@ void moveToPoint(int xEst, int yEst)
 		{
 			servoPositionX = 0;
 			setServoDegree(1, servoPositionX);
-			delay(5000);
+			delay(50);
 		}
-		if (touchpanelPositionX < (xEst * 0.85))
+		if (touchpanelPositionX < (xEst * 0.9))
+		{
+			servoPositionX += 2.0;
+		}
+		else if (touchpanelPositionX < (xEst * 0.95))
+		{
+			servoPositionX += 1.5;
+		}
+		else if (touchpanelPositionX < (xEst * 0.99))
 		{
 			servoPositionX += 1.0;
 		}
-		else if (touchpanelPositionX < (xEst * 0.92))
+		else if (touchpanelPositionX > (xEst * 1.1))
 		{
-			servoPositionX += 0.5;
+			servoPositionX -= 2.0;
 		}
-		else if (touchpanelPositionX < (xEst * 0.98))
+		else if (touchpanelPositionX > (xEst * 1.05))
 		{
-			servoPositionX += 0.2;
+			servoPositionX -= 1.5;
 		}
-		else if (touchpanelPositionX > (xEst * 1.15))
+		else if (touchpanelPositionX > (xEst * 1.01))
 		{
 			servoPositionX -= 1.0;
-		}
-		else if (touchpanelPositionX > (xEst * 1.08))
-		{
-			servoPositionX -= 0.5;
-		}
-		else if (touchpanelPositionX > (xEst * 1.02))
-		{
-			servoPositionX -= 0.2;
 		}
 		setServoDegree(1, servoPositionX);
 		delay(delay_ms);
