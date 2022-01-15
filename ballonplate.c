@@ -45,13 +45,10 @@ int main()
 	// Later: dependending on chosen mode (DB)
 	while (1)
 	{
-		moveToPoint(7500, 8000);
+		moveToPoint(7800, 8000);
 	}
-	/*
-	setServoDegree(0, -20);
-	getServoPosition(&servoPositionX, &servoPositionY);
-	printf("xDrehung1: %d    |    yDrehung1: %d\n", servoPositionX, servoPositionY);
-	*/
+
+	//setServoDegree(1, -10);
 
 	printf("\n\nError Code: %d\n", errorCode);
 	close(connectionTouchpanel);
@@ -60,53 +57,41 @@ int main()
 
 void moveToPoint(int xEst, int yEst)
 {
-	int touchpanelPositionX = 0;
-	int touchpanelPositionY = 0;
+	int touchpanelPositionX;
+	int touchpanelPositionY;
+	int touchpanelOldX;
+	int touchpanelOldY;
 	getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
 	printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 
-	double servoPositionX = 0;
-	double servoPositionY = 0;
-	int delay_ms = 20;
-	while ((touchpanelPositionX < (xEst * 0.98)) || (touchpanelPositionX > (xEst * 1.02)))
+	double servoPositionX;
+	double servoPositionY;
+	int delay_ms = 0;
+	while ((touchpanelPositionX < (xEst * 0.99)) || (touchpanelPositionX > (xEst * 1.01)))
 	{
 		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
 		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
-		//getServoPosition(&servoPositionX, &servoPositionY);
-		//printf("SxPosition: %f    |    SyPosition: %f\n", servoPositionX, servoPositionY);
 
-		if (servoPositionX > 20 || servoPositionX < -20)
-		{
-			servoPositionX = 0;
-			setServoDegree(1, servoPositionX);
-			delay(50);
-		}
-		if (touchpanelPositionX < (xEst * 0.9))
-		{
-			servoPositionX += 2.0;
-		}
-		else if (touchpanelPositionX < (xEst * 0.95))
-		{
-			servoPositionX += 1.5;
-		}
-		else if (touchpanelPositionX < (xEst * 0.99))
-		{
-			servoPositionX += 1.0;
-		}
-		else if (touchpanelPositionX > (xEst * 1.1))
-		{
-			servoPositionX -= 2.0;
-		}
-		else if (touchpanelPositionX > (xEst * 1.05))
-		{
-			servoPositionX -= 1.5;
-		}
-		else if (touchpanelPositionX > (xEst * 1.01))
-		{
-			servoPositionX -= 1.0;
+		if (touchpanelPositionX < touchpanelOldX) {
+			if (touchpanelPositionX < (xEst * 0.8)) {
+				servoPositionX = 3.0;
+			} else if (touchpanelPositionX < (xEst * 0.92)) {
+				servoPositionX = 2.5;
+			} else if (touchpanelPositionX < (xEst * 0.98)) {
+				servoPositionX = 2.0;
+			}
+		} else if (touchpanelPositionX > touchpanelOldX) {
+			if (touchpanelPositionX > (xEst * 1.2)) {
+				servoPositionX = -3.0;
+			} else if (touchpanelPositionX > (xEst * 1.08)){
+				servoPositionX = -2.5;
+			} else if (touchpanelPositionX > (xEst * 1.02)) {
+				servoPositionX = -2.0;
+			}
 		}
 		setServoDegree(1, servoPositionX);
 		delay(delay_ms);
+		touchpanelOldX = touchpanelPositionX;
 	}
 }
 

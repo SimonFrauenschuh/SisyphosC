@@ -38,7 +38,7 @@ int readWord2c(int addr) {
 	return val;
 }
 
-// Simple Method to calculate the distance between to points in a triangle (Pythagoras)
+// Method to calculate the distance between to points in a triangle (Pythagoras)
 double dist(double a, double b) {
 	return sqrt((a*a) + (b*b));
 }

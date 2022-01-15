@@ -11,7 +11,7 @@ int errorCode = 0;
 #define PIN_BASE 300
 #define CHANNEL0_MIN 140
 #define CHANNEL0_DIFF 510
-#define CHANNEL1_MIN 143
+#define CHANNEL1_MIN 139
 #define CHANNEL1_DIFF 532
 #define HERTZ 60
 
@@ -86,9 +86,9 @@ void setServoDegree(int channel, int degree) {
 		// Calculate the waiting duration
 		int diffSet;
 		if (channel == 0) {
-			diffSet = (move - oldSet) * 2.6;
+			diffSet = (move - oldSet) * 2.2;
 		} else {
-			diffSet = (move - oldSet) * 2.4;
+			diffSet = (move - oldSet) * 2.0;
 		}
 		if (diffSet > 0) {
 			delay(diffSet);

@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <linux/input.h>
+#include <time.h>
 
 #include "servo.h"
 
@@ -53,6 +54,9 @@ void checkUser()
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
 void getTouchpanelPosition(int *posX, int *posY)
 {
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Need for a more performant solution
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     close(connectionTouchpanel);
     connectionTouchpanel = open(EVENT_DEVICE, O_RDWR);
 
@@ -63,10 +67,14 @@ void getTouchpanelPosition(int *posX, int *posY)
 
     const size_t ev_size = sizeof(struct input_event);
     ssize_t size;
-    // Do this, until both values have changed
-    while (posXold == *posX || posYold == *posY)
-    {
 
+    /*clock_t begin = clock();
+    clock_t stop;
+    double diff; */
+    
+    // Do this, until both values have changed
+    while (posXold == *posX || posYold == *posY) //&& (diff < 1000))
+    {
         // Read from the Event0 file
         size = read(connectionTouchpanel, &ev, ev_size);
         if (size < ev_size)
@@ -88,5 +96,8 @@ void getTouchpanelPosition(int *posX, int *posY)
                 *posY = ev.value - POSDEVIATION;
             }
         }
+        /*stop = clock();
+        diff = (stop - begin) / CLOCKS_PER_SEC;*/
     }
+    //printf("%d\n", diff);
 }
