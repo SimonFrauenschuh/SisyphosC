@@ -20,13 +20,10 @@ void firstSetupServo();
 int readServoPosition(int channel);
 
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
-int calculateServoPWMSignal(int channel, int degree);
+int calculateServoPWMSignal(int channel, double degree);
 
-// Simple Method to set a specific servo to a specific angle; without any Smoothing
-void setServoDegree(int channel, int degree);
-
-// Method to set a specific servo to a specifig angle with smoothing
-void setServoDegreeSmooth(int channel, int degree);
+// Method to set a specific servo to a specific angle; without any Smoothing
+void setServoDegree(int channel, double degree);
 
 // Moves all Servos to 0 degree (horizontal)
 void setServoNull();

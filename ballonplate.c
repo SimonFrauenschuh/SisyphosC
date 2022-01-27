@@ -16,19 +16,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 // Defined in servo.h
 // int errorCode = 0;
 
 // Reads out the current position from the Servo-Driver and the Gyroscope
 // If the deviation of those two values is too high, an error code is sent
-void getServoPosition(double *servoPositionX, double *servoPositionY);
+void getServoPosition(double* servoPositionX, double* servoPositionY);
 
 // Logic for mode single-point (define a point, where the ball should move to)
 void moveToPoint(int xEst, int yEst);
 
-int main()
-{
+int main() {
 	// Check if the user is root & connect to touchpanel
 	checkUser();
 	firstSetupTouchpanel();
@@ -39,64 +39,55 @@ int main()
 
 	// Connect and calibrate Gyroscope
 	firstSetupGyro();
-	calibrateGyro();
+	//calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
 
 	// Later: dependending on chosen mode (DB)
-	while (1)
-	{
+	while (1) 	{
 		moveToPoint(7800, 8000);
 	}
-
-	//setServoDegree(1, -10);
 
 	printf("\n\nError Code: %d\n", errorCode);
 	close(connectionTouchpanel);
 	return 0;
-}
-
-void moveToPoint(int xEst, int yEst)
-{
-	int touchpanelPositionX;
-	int touchpanelPositionY;
-	int touchpanelOldX;
-	int touchpanelOldY;
-	getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
-	printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
-
-	double servoPositionX;
-	double servoPositionY;
-	int delay_ms = 0;
-	while ((touchpanelPositionX < (xEst * 0.99)) || (touchpanelPositionX > (xEst * 1.01)))
-	{
-		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
-		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
-
-		if (touchpanelPositionX < touchpanelOldX) {
-			if (touchpanelPositionX < (xEst * 0.8)) {
-				servoPositionX = 3.0;
-			} else if (touchpanelPositionX < (xEst * 0.92)) {
-				servoPositionX = 2.5;
-			} else if (touchpanelPositionX < (xEst * 0.98)) {
-				servoPositionX = 2.0;
-			}
-		} else if (touchpanelPositionX > touchpanelOldX) {
-			if (touchpanelPositionX > (xEst * 1.2)) {
-				servoPositionX = -3.0;
-			} else if (touchpanelPositionX > (xEst * 1.08)){
-				servoPositionX = -2.5;
-			} else if (touchpanelPositionX > (xEst * 1.02)) {
-				servoPositionX = -2.0;
-			}
-		}
-		setServoDegree(1, servoPositionX);
-		delay(delay_ms);
-		touchpanelOldX = touchpanelPositionX;
 	}
-}
 
-void getServoPosition(double *servoPositionX, double *servoPositionY)
-{
+void moveToPoint(int xEst, int yEst) {
+	// Touchpanel-specific values for the center
+	int xMid = 7800, yMid = 7800;
+	int touchpanelPositionX, touchpanelPositionY;
+	int touchpanelPositionXOld, touchpanelPositionYOld;
+
+	// Used for the "D" Part of the PD-Controller
+	struct timeval begin, end;
+	long microseconds;
+
+	// Start measuring time
+    gettimeofday(&begin, 0);
+
+	while (1) {	
+		touchpanelPositionXOld = touchpanelPositionX;
+		touchpanelPositionYOld = touchpanelPositionY;
+
+		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
+		//printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
+
+		// Stop measuring time and calculate the elapsed time
+    	gettimeofday(&end, 0);
+    	microseconds = end.tv_usec - begin.tv_usec;
+		// Calculate the "D" Part of the PD-Controller
+		double d = (touchpanelPositionXOld - touchpanelPositionX) / (microseconds / 580.0);
+		// Start measuring time
+    	gettimeofday(&begin, 0);
+
+		double p = -(double)(touchpanelPositionX - xMid) / 550;
+		p = 408 + p;
+
+		pwmWrite(PIN_BASE + 1, p + d);
+		}
+	}
+
+void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	// Gets the raw PWM Data from the Servo and decrypts the original angle
 	*servoPositionY = readServoPosition(0);
 	*servoPositionX = readServoPosition(1);
@@ -115,10 +106,9 @@ void getServoPosition(double *servoPositionX, double *servoPositionY)
 
 	// Control, if the two values match nearly, else write a error code to the DB
 	int deviation = 1000;
-	if ((gyroscopeXReal > (*servoPositionX + deviation)) || (gyroscopeXReal < (*servoPositionX - deviation)) || (gyroscopeYReal > (*servoPositionY + deviation)) || (gyroscopeYReal < (*servoPositionY - deviation)))
-	{
+	if ((gyroscopeXReal > (*servoPositionX + deviation)) || (gyroscopeXReal < (*servoPositionX - deviation)) || (gyroscopeYReal > (*servoPositionY + deviation)) || (gyroscopeYReal < (*servoPositionY - deviation))) 	{
 		printf("---ERROR 3--- Gyroscope does not match estimated\n");
 		errorCode = 3;
 		exit(3);
+		}
 	}
-}

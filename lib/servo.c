@@ -11,8 +11,11 @@ int errorCode = 0;
 #define PIN_BASE 300
 #define CHANNEL0_MIN 140
 #define CHANNEL0_DIFF 510
-#define CHANNEL1_MIN 139
-#define CHANNEL1_DIFF 532
+// At home
+#define CHANNEL1_MIN 145
+// In school
+//#define CHANNEL1_MIN 146
+#define CHANNEL1_DIFF 523
 #define HERTZ 60
 
 // First initial setup (connection) for the Servos
@@ -46,29 +49,29 @@ int readServoPosition(int channel) {
 }
 
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
-int calculateServoPWMSignal(int channel, int degree) {
+int calculateServoPWMSignal(int channel, double degree) {
 	// Add 90 to "degree" to make function more user-friendly (range from -90 to 90 instead of 0 to 180)
-	degree += 90;
+	degree += 90.0;
 	int move;
-	// Simple logik to find out which channel to use (servo-specific parameters) and calculation of PWM-signal
+	// Logik to find out which channel to use (servo-specific parameters) and calculation of PWM-signal
 	if (channel == 0) {
-		if (degree == 0) {
+		if (degree == 0.0) {
 			move = CHANNEL0_MIN;
 		} else {
-			move = (int)(CHANNEL0_DIFF * ((float)degree / 180) + CHANNEL0_MIN);
+			move = (int)(CHANNEL0_DIFF * (degree / 180) + CHANNEL0_MIN);
 		}
 	} else {
-		if (degree == 0) {
+		if (degree == 0.0) {
 			move = CHANNEL1_MIN;
 		} else {
-			move = (int)(CHANNEL1_DIFF * ((float)degree / 180) + CHANNEL1_MIN);
+			move = (int)(CHANNEL1_DIFF * (degree / 180) + CHANNEL1_MIN);
 		}
 	}
 	return move;
 }
 
 // Method to set a specific servo to a specific angle; without any Smoothing
-void setServoDegree(int channel, int degree) {
+void setServoDegree(int channel, double degree) {
 	// If Channel 16 (all Servos) is choosen
 	if (channel == 16) {
 		setServoDegree(0, degree);
@@ -88,7 +91,7 @@ void setServoDegree(int channel, int degree) {
 		if (channel == 0) {
 			diffSet = (move - oldSet) * 2.2;
 		} else {
-			diffSet = (move - oldSet) * 2.0;
+			diffSet = (move - oldSet) * 2;
 		}
 		if (diffSet > 0) {
 			delay(diffSet);
@@ -96,23 +99,6 @@ void setServoDegree(int channel, int degree) {
 			delay(-diffSet);
 		}
 	}
-}
-
-// Method to set a specific servo to a specifig angle with smoothing
-void setServoDegreeSmooth(int channel, int degree) {
-	// Read the previous set from Controller to calculate later the duration for waiting, until the servo is in the right position
-	int oldSet = readServoPosition(channel);
-	
-	// Calculate the PWM-Signal
-	int move = calculateServoPWMSignal(channel, degree);
-	
-	// Calculate, how many steps are needed to guarantee a smooth movement
-	int diffSet = move - oldSet;
-	if (diffSet < 0) {
-		diffSet *= -1;
-	}
-	
-	
 }
 
 // Moves all Servos to 0 degree (horizontal)
