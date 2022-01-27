@@ -39,12 +39,12 @@ int main() {
 
 	// Connect and calibrate Gyroscope
 	firstSetupGyro();
-	//calibrateGyro();
+	calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
 
 	// Later: dependending on chosen mode (DB)
 	while (1) 	{
-		moveToPoint(7800, 8000);
+		moveToPoint(7800, 7400);
 	}
 
 	printf("\n\nError Code: %d\n", errorCode);
@@ -54,9 +54,11 @@ int main() {
 
 void moveToPoint(int xEst, int yEst) {
 	// Touchpanel-specific values for the center
-	int xMid = 7800, yMid = 7800;
+	int xMid = 7800, yMid = 7400;
 	int touchpanelPositionX, touchpanelPositionY;
 	int touchpanelPositionXOld, touchpanelPositionYOld;
+	// Values for the PD-Regulator
+	double dX, dY, pX, pY;
 
 	// Used for the "D" Part of the PD-Controller
 	struct timeval begin, end;
@@ -70,20 +72,22 @@ void moveToPoint(int xEst, int yEst) {
 		touchpanelPositionYOld = touchpanelPositionY;
 
 		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
-		//printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
+		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 
 		// Stop measuring time and calculate the elapsed time
     	gettimeofday(&end, 0);
     	microseconds = end.tv_usec - begin.tv_usec;
 		// Calculate the "D" Part of the PD-Controller
-		double d = (touchpanelPositionXOld - touchpanelPositionX) / (microseconds / 580.0);
+		dX = (touchpanelPositionXOld - touchpanelPositionX) / (microseconds / 580.0);
+		dY = - (touchpanelPositionYOld - touchpanelPositionY) / (microseconds / 530.0);
 		// Start measuring time
     	gettimeofday(&begin, 0);
 
-		double p = -(double)(touchpanelPositionX - xMid) / 550;
-		p = 408 + p;
+		pX = 408 - (double)(touchpanelPositionX - xMid) / 550;
+		pY = 385 + (double)(touchpanelPositionY - yMid) / 980;
 
-		pwmWrite(PIN_BASE + 1, p + d);
+		pwmWrite(PIN_BASE + 1, pX + dX);
+		pwmWrite(PIN_BASE + 0, pY + dY);
 		}
 	}
 
