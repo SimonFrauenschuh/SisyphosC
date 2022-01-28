@@ -13,10 +13,10 @@
 #include "lib/servo.h"
 #include "lib/gyroscope.h"
 #include "lib/touchpanel.h"
+#include "lib/logic.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 
 // Defined in servo.h
 // int errorCode = 0;
@@ -24,9 +24,6 @@
 // Reads out the current position from the Servo-Driver and the Gyroscope
 // If the deviation of those two values is too high, an error code is sent
 void getServoPosition(double* servoPositionX, double* servoPositionY);
-
-// Logic for mode single-point (define a point, where the ball should move to)
-void moveToPoint(int xEst, int yEst);
 
 int main() {
 	// Check if the user is root & connect to touchpanel
@@ -39,7 +36,7 @@ int main() {
 
 	// Connect and calibrate Gyroscope
 	firstSetupGyro();
-	calibrateGyro();
+	//calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
 
 	// Later: dependending on chosen mode (DB)
@@ -50,46 +47,7 @@ int main() {
 	printf("\n\nError Code: %d\n", errorCode);
 	close(connectionTouchpanel);
 	return 0;
-	}
-
-void moveToPoint(int xEst, int yEst) {
-	// Touchpanel-specific values for the center
-	int xMid = 7800, yMid = 7400;
-	int touchpanelPositionX, touchpanelPositionY;
-	int touchpanelPositionXOld, touchpanelPositionYOld;
-	// Values for the PD-Regulator
-	double dX, dY, pX, pY;
-
-	// Used for the "D" Part of the PD-Controller
-	struct timeval begin, end;
-	long microseconds;
-
-	// Start measuring time
-    gettimeofday(&begin, 0);
-
-	while (1) {	
-		touchpanelPositionXOld = touchpanelPositionX;
-		touchpanelPositionYOld = touchpanelPositionY;
-
-		getTouchpanelPosition(&touchpanelPositionX, &touchpanelPositionY);
-		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
-
-		// Stop measuring time and calculate the elapsed time
-    	gettimeofday(&end, 0);
-    	microseconds = end.tv_usec - begin.tv_usec;
-		// Calculate the "D" Part of the PD-Controller
-		dX = (touchpanelPositionXOld - touchpanelPositionX) / (microseconds / 580.0);
-		dY = - (touchpanelPositionYOld - touchpanelPositionY) / (microseconds / 530.0);
-		// Start measuring time
-    	gettimeofday(&begin, 0);
-
-		pX = 408 - (double)(touchpanelPositionX - xMid) / 550;
-		pY = 385 + (double)(touchpanelPositionY - yMid) / 980;
-
-		pwmWrite(PIN_BASE + 1, pX + dX);
-		pwmWrite(PIN_BASE + 0, pY + dY);
-		}
-	}
+}
 
 void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	// Gets the raw PWM Data from the Servo and decrypts the original angle
