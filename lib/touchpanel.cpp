@@ -5,7 +5,9 @@
 #include <linux/input.h>
 #include <time.h>
 
+// For variable "errorCode"
 #include "servo.h"
+#include "Adafruit_ADS1015.h"
 
 #define EVENT_DEVICE "/dev/input/event0"
 #define EVENT_TYPE EV_ABS
@@ -14,11 +16,14 @@
 
 #define POSDEVIATION 580
 
+// USB
 int connectionTouchpanel = 0;
+// ADC
+Adafruit_ADS1015 adc;
 
 // Initial function to connect to the Touchpanel
 // Read from "Event 0" (Linux-Kernel)
-void firstSetupTouchpanel() {
+void firstSetupTouchpanelUSB() {
     printf("Connecting to Touchpanel...\n");
 
     char name[256] = "";
@@ -38,6 +43,12 @@ void firstSetupTouchpanel() {
     printf("device name = %s\n\n", name);
 }
 
+void firstSetupTouchpanelADC(uint8_t i2cAddress) {
+    // Connect to the right I2C Adress
+    //adc.setI2cAddress(i2cAddress);
+    //adc.begin();
+}
+
 // Function to check if the user is root
 void checkUser() {
     if ((getuid()) != 0) {
@@ -48,12 +59,8 @@ void checkUser() {
 }
 
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
-void getTouchpanelPosition(int* posX, int* posY) {
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // Need for a more performant solution
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    close(connectionTouchpanel);
-    connectionTouchpanel = open(EVENT_DEVICE, O_RDWR);
+void getTouchpanelPositionUSB(int* posX, int* posY) {
+    truncate(EVENT_DEVICE, 0);
 
     struct input_event ev;
     // Store the olg (given) values
@@ -83,4 +90,25 @@ void getTouchpanelPosition(int* posX, int* posY) {
             }
         }
     }
+}
+
+// Function to read from the ADC and convert it into 2 digital values
+void getTouchpanelPositionADC(int* posX, int* posY) {
+
+    struct timeval begin, end;
+	long microseconds;
+	// Start measuring time
+    gettimeofday(&begin, 0);
+
+    /*uint16_t channel0 = adc.readADC_SingleEnded(0);
+    uint16_t channel1 = adc.readADC_SingleEnded(1);
+    uint16_t channel2 = adc.readADC_SingleEnded(2);
+    uint16_t channel3 = adc.readADC_SingleEnded(3);
+*/
+    // Logic for converting the analog values to digital
+
+
+    gettimeofday(&end, 0);
+    microseconds = end.tv_usec - begin.tv_usec;
+    printf("%ld\n", microseconds / 1000);
 }

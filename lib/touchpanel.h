@@ -5,18 +5,27 @@
  * under the responsibility of the user and and the editor
  * cannot be prosecuted for it
  */
-#include "touchpanel.c"
+#include "touchpanel.cpp"
 
 #pragma once
 
 extern int connectionTouchpanel;
 
+// To use with an USB controller
 // Initial function to connect to the Touchpanel
 // Read from "Event 0" (Linux-Kernel)
-void firstSetupTouchpanel();
+void firstSetupTouchpanelUSB();
 
+// Connect to the ADC (I2C)
+void firstSetupTouchpanelADC(uint8_t i2cAddress);
+
+// To use with an USB controller
 // Function to check if the user is root
 void checkUser();
 
+// To use with an USB controller
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
-void getTouchpanelPosition(int *posX, int *posY);
+void getTouchpanelPositionUSB(int *posX, int *posY);
+
+// Function to read from the ADC and convert it into 2 digital values
+void getTouchpanelPositionADC(int* posX, int* posY);

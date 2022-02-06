@@ -9,11 +9,14 @@
 // Username: SimonFrauenschuh
 // Password Token: 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
 
-#include "pca9685.h"
-#include "lib/servo.h"
-#include "lib/gyroscope.h"
+extern "C"{
+	#include "lib/servo.h"
+	#include "pca9685.h"
+	#include "lib/gyroscope.h"
+}
 #include "lib/touchpanel.h"
 #include "lib/logic.h"
+#include "lib/Adafruit_ADS1015.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,9 +29,10 @@
 void getServoPosition(double* servoPositionX, double* servoPositionY);
 
 int main() {
-	// Check if the user is root & connect to touchpanel
+	// Check if the user is root & connect to touchpanel (USB)
 	checkUser();
-	firstSetupTouchpanel();
+	firstSetupTouchpanelUSB();
+	//firstSetupTouchpanelADC(0x48);
 
 	// Connect and calibrate Servos
 	firstSetupServo();
@@ -45,7 +49,6 @@ int main() {
 	}
 
 	printf("\n\nError Code: %d\n", errorCode);
-	close(connectionTouchpanel);
 	return 0;
 }
 
