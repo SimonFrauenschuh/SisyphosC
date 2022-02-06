@@ -21,10 +21,10 @@ LDADC = -L/home/pi/Desktop/BallOnPlateC/lib/Adafruit_ADS1015.h
 
 # Two-Step-Compiling
 ballonplate:	ballonplate.o
-	@gcc $(LDLIBS) $(LDSERVO) $(LDGYRO) $(LDLOGIC) $(LDADC) $< -o $@
+	@g++ $(LDLIBS) $(LDSERVO) $(LDGYRO) $(LDTOUCH) $(LDLOGIC) $(LDADC) $< -o $@
 	
 ballonplate.o: ballonplate.cpp
-	@gcc -c ballonplate.cpp
+	@g++ -c ballonplate.cpp
 
 # Delete the ".o" files
 .PHONY: clean

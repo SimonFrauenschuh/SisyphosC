@@ -18,8 +18,6 @@
 
 // USB
 int connectionTouchpanel = 0;
-// ADC
-Adafruit_ADS1015 adc;
 
 // Initial function to connect to the Touchpanel
 // Read from "Event 0" (Linux-Kernel)
@@ -45,8 +43,7 @@ void firstSetupTouchpanelUSB() {
 
 void firstSetupTouchpanelADC(uint8_t i2cAddress) {
     // Connect to the right I2C Adress
-    //adc.setI2cAddress(i2cAddress);
-    //adc.begin();
+    begin(i2cAddress);
 }
 
 // Function to check if the user is root
@@ -100,13 +97,23 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 	// Start measuring time
     gettimeofday(&begin, 0);
 
-    /*uint16_t channel0 = adc.readADC_SingleEnded(0);
-    uint16_t channel1 = adc.readADC_SingleEnded(1);
-    uint16_t channel2 = adc.readADC_SingleEnded(2);
-    uint16_t channel3 = adc.readADC_SingleEnded(3);
-*/
-    // Logic for converting the analog values to digital
 
+    // Logic for getting the touchpanel-position (https://de.wikipedia.org/wiki/Touchscreen)
+    // 1) Set GPIO 0 to 5V; GPIO 1 to GND;
+
+    // 2) Measure the two Voltages
+    uint16_t channel0 = readADC_SingleEnded(0);
+    uint16_t channel1 = readADC_SingleEnded(1);
+    // 3) Calculate the distance to the edges of the touchpanel
+
+    // 4) Set GPIO 1 to GND; PGIO 1 to 5V;
+
+    // 5) Measure the two Voltages
+    uint16_t channel0 = readADC_SingleEnded(0);
+    uint16_t channel1 = readADC_SingleEnded(1);
+    // 6) Calculate the distance to the edges of the touchpanel
+
+    // 7) Calculate the position and write it onto the given variables (pointers)
 
     gettimeofday(&end, 0);
     microseconds = end.tv_usec - begin.tv_usec;
