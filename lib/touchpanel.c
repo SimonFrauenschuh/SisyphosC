@@ -92,6 +92,8 @@ void getTouchpanelPositionUSB(int* posX, int* posY) {
 // Function to read from the ADC and convert it into 2 digital values
 void getTouchpanelPositionADC(int* posX, int* posY) {
 
+    uint16_t channel0, channel1;
+
     struct timeval begin, end;
 	long microseconds;
 	// Start measuring time
@@ -102,15 +104,15 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     // 1) Set GPIO 0 to 5V; GPIO 1 to GND;
 
     // 2) Measure the two Voltages
-    uint16_t channel0 = readADC_SingleEnded(0);
-    uint16_t channel1 = readADC_SingleEnded(1);
+    channel0 = readADC_SingleEnded(0);
+    channel1 = readADC_SingleEnded(1);
     // 3) Calculate the distance to the edges of the touchpanel
 
     // 4) Set GPIO 1 to GND; PGIO 1 to 5V;
 
     // 5) Measure the two Voltages
-    uint16_t channel0 = readADC_SingleEnded(0);
-    uint16_t channel1 = readADC_SingleEnded(1);
+    channel0 = readADC_SingleEnded(0);
+    channel1 = readADC_SingleEnded(1);
     // 6) Calculate the distance to the edges of the touchpanel
 
     // 7) Calculate the position and write it onto the given variables (pointers)

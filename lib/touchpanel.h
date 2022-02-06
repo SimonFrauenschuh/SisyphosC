@@ -5,7 +5,7 @@
  * under the responsibility of the user and and the editor
  * cannot be prosecuted for it
  */
-#include "touchpanel.cpp"
+#include "touchpanel.c"
 
 #pragma once
 

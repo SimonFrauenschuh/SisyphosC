@@ -9,14 +9,9 @@
 // Username: SimonFrauenschuh
 // Password Token: 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
 
-extern "C"{
-	#include "lib/servo.h"
-	#include "pca9685.h"
-	#include "lib/gyroscope.h"
-}
-#include "lib/touchpanel.h"
+#include "lib/servo.h"
+#include "lib/gyroscope.h"
 #include "lib/logic.h"
-#include "lib/Adafruit_ADS1015.h"
 
 #include <stdio.h>
 #include <stdlib.h>

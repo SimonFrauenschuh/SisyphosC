@@ -18,9 +18,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "Adafruit_ADS1015.cpp"
+#include "Adafruit_ADS1015.c"
 
-void begin(void);
+void begin(uint8_t i2cAddress);
 uint16_t  readADC_SingleEnded(uint8_t channel);
 void      updateWiringPiSetup();
 void      setI2cAddress(uint8_t i2cAddress);
