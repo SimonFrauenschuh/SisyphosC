@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <linux/input.h>
 #include <time.h>
+#include <wiringPi.h>
 
 // For variable "errorCode"
 #include "servo.h"
@@ -57,7 +58,10 @@ void checkUser() {
 
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
 void getTouchpanelPositionUSB(int* posX, int* posY) {
-    truncate(EVENT_DEVICE, 0);
+    //truncate(EVENT_DEVICE, 0);
+
+    close(connectionTouchpanel);
+    connectionTouchpanel = open(EVENT_DEVICE, O_RDWR);
 
     struct input_event ev;
     // Store the olg (given) values
@@ -99,23 +103,46 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 	// Start measuring time
     gettimeofday(&begin, 0);
 
-
     // Logic for getting the touchpanel-position (https://de.wikipedia.org/wiki/Touchscreen)
-    // 1) Set GPIO 0 to 5V; GPIO 1 to GND;
+    // 1) Initialize the GPIO library and set all Pins as input (safety)
+    wiringPiSetupGpio();
+    pinMode(5, INPUT);
+    pinMode(6, INPUT);
+    pinMode(12, INPUT);
+    pinMode(13, INPUT);
 
-    // 2) Measure the two Voltages
+    // 2) Set GPIO 5 & 6 to 5V; GPIO 12 & 13 to GND (input);
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
+    digitalWrite(5, HIGH);
+    digitalWrite(6, HIGH);
+
+
+    // 3) Measure the two Voltages
     channel0 = readADC_SingleEnded(0);
     channel1 = readADC_SingleEnded(1);
-    // 3) Calculate the distance to the edges of the touchpanel
 
-    // 4) Set GPIO 1 to GND; PGIO 1 to 5V;
+    // 4) Calculate the distance to the edges of the touchpanel
 
-    // 5) Measure the two Voltages
+    // 5) Set GPIO 5 & 6 to GND (input); GPIO 12 & 13 to 5V;
+    pinMode(5, INPUT);
+    pinMode(6, INPUT);
+    pinMode(12, OUTPUT);
+    pinMode(13, OUTPUT);
+    digitalWrite(12, HIGH);
+    digitalWrite(13, HIGH);
+
+    // 6) Measure the two Voltages
     channel0 = readADC_SingleEnded(0);
     channel1 = readADC_SingleEnded(1);
-    // 6) Calculate the distance to the edges of the touchpanel
 
-    // 7) Calculate the position and write it onto the given variables (pointers)
+    // 7) Calculate the distance to the edges of the touchpanel
+
+    // 8) Calculate the position and write it onto the given variables (pointers)
+
+    // 9) Set the GPIOs back to input (safety and power-efficiency)
+    pinMode(12, INPUT);
+    pinMode(13, INPUT);
 
     gettimeofday(&end, 0);
     microseconds = end.tv_usec - begin.tv_usec;
