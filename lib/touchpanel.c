@@ -115,7 +115,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     pinMode(5, OUTPUT);
     pinMode(6, OUTPUT);
     digitalWrite(5, HIGH);
-    digitalWrite(6, HIGH);
+    digitalWrite(6, LOW);
 
     // 3) Measure the two Voltages
     channel0 = readADC_SingleEnded(0);
@@ -130,10 +130,10 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     pinMode(12, OUTPUT);
     pinMode(13, OUTPUT);
     digitalWrite(12, HIGH);
-    digitalWrite(13, HIGH);
+    digitalWrite(13, LOW);
 
     // 6) Measure the two Voltages
-    channel1 = readADC_SingleEnded(1);
+    channel1 = readADC_SingleEnded(2);
 
     // 7) Calculate the distance to the edges of the touchpanel
     posY = channel1 * 1.31578947 * 228 / 3.3;
