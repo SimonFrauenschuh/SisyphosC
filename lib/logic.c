@@ -30,7 +30,8 @@ void moveToPoint(int xEst, int yEst) {
 		touchpanelPositionXOld = touchpanelPositionX;
 		touchpanelPositionYOld = touchpanelPositionY;
 
-		getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
+		getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
+		//getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
 		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 
 		// Stop measuring time and calculate the elapsed time

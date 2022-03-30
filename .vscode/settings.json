@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "logic.c": "cpp"
+        "logic.c": "cpp",
+        "i2c-dev.h": "c"
     }
 }

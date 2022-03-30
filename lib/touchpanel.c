@@ -8,7 +8,7 @@
 
 // For variable "errorCode"
 #include "servo.h"
-#include "Adafruit_ADS1015.h"
+#include "ADS1115.h"
 
 #define EVENT_DEVICE "/dev/input/event0"
 #define EVENT_TYPE EV_ABS
@@ -105,42 +105,44 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     // Logic for getting the touchpanel-position (https://de.wikipedia.org/wiki/Touchscreen)
     // 1) Initialize the GPIO library and set all Pins as input (safety)
-    wiringPiSetupGpio();
-    pinMode(5, INPUT);
-    pinMode(6, INPUT);
-    pinMode(12, INPUT);
-    pinMode(13, INPUT);
+    wiringPiSetup();
+    pinMode(21, INPUT);
+    pinMode(22, INPUT);
+    pinMode(26, INPUT);
+    pinMode(23, INPUT);
 
     // 2) Set GPIO 5 & 6 to 3,3V; GPIO 12 & 13 to GND (input);
-    pinMode(5, OUTPUT);
-    pinMode(6, OUTPUT);
-    digitalWrite(5, HIGH);
-    digitalWrite(6, LOW);
+    pinMode(21, OUTPUT);
+    pinMode(22, OUTPUT);
+    digitalWrite(26, LOW);
+    digitalWrite(21, HIGH);
+    digitalWrite(22, LOW);
 
-    // 3) Measure the two Voltages
-    channel0 = readADC_SingleEnded(0);
+    // 3) Measure the Voltage
+    channel0 = getVoltage(0);
 
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
-    posX = channel0 * 1.31578947 * 304 / 3.3;
+    *posX = channel0 * 1.31578947 * 304 / 3.3;
 
     // 5) Set GPIO 5 & 6 to GND (input); GPIO 12 & 13 to 3,3V;
-    pinMode(5, INPUT);
-    pinMode(6, INPUT);
-    pinMode(12, OUTPUT);
-    pinMode(13, OUTPUT);
-    digitalWrite(12, HIGH);
-    digitalWrite(13, LOW);
+    pinMode(21, INPUT);
+    pinMode(22, INPUT);
+    pinMode(26, OUTPUT);
+    pinMode(23, OUTPUT);
+    digitalWrite(21, LOW);
+    digitalWrite(23, HIGH);
+    digitalWrite(26, LOW);
 
-    // 6) Measure the two Voltages
-    channel1 = readADC_SingleEnded(2);
+    // 6) Measure the Voltage
+    channel1 = getVoltage(2);
 
     // 7) Calculate the distance to the edges of the touchpanel
-    posY = channel1 * 1.31578947 * 228 / 3.3;
+    *posY = channel1 * 1.31578947 * 228 / 3.3;
 
     // 8) Set the GPIOs back to input (safety and power-efficiency)
-    pinMode(12, INPUT);
-    pinMode(13, INPUT);
+    pinMode(26, INPUT);
+    pinMode(23, INPUT);
 
     gettimeofday(&end, 0);
     microseconds = end.tv_usec - begin.tv_usec;

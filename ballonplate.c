@@ -26,15 +26,15 @@ void getServoPosition(double* servoPositionX, double* servoPositionY);
 int main() {
 	// Check if the user is root & connect to touchpanel (USB)
 	checkUser();
-	firstSetupTouchpanelUSB();
-	//firstSetupTouchpanelADC(0x48);
+	//firstSetupTouchpanelUSB();
+	firstSetupTouchpanelADC(0x48);
 
 	// Connect and calibrate Servos
 	firstSetupServo();
-	setServoNull();
+	//setServoNull();
 
 	// Connect and calibrate Gyroscope
-	firstSetupGyro();
+	//firstSetupGyro();
 	//calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
 

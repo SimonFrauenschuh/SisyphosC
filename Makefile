@@ -17,7 +17,7 @@ LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
 LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
 LDTOUCH = -L/home/pi/Desktop/BallOnPlateC/lib/touchpanel.h
 LDLOGIC = -L/home/pi/Desktop/BallOnPlateC/lib/logic.h
-LDADC = -L/home/pi/Desktop/BallOnPlateC/lib/Adafruit_ADS1015.h
+LDADC = -L/home/pi/Desktop/BallOnPlateC/lib/ADS1115.h
 
 # Two-Step-Compiling
 ballonplate:	ballonplate.o
