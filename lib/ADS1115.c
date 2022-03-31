@@ -10,12 +10,16 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 
-#include "ADS1115.h"
 // For errorCode
 #include "servo.h"
 
+// Value to store the I2C connection
+int connectionADC = 0;
+// Array to store all Config-Registers
+char config[4][3] = {0};
+
 // Function to create the connection via the I2C-Bus
-void initADC() {
+void initADC(u_int8_t i2cAddress) {
     // Create I2C bus
 	char *bus = "/dev/i2c-1";
 	if ((connectionADC = open(bus, O_RDWR)) < 0) 
@@ -25,7 +29,7 @@ void initADC() {
 		exit(3);
 	}
 	// Get I2C device, ADS1115 I2C address is 0x48(72)
-	ioctl(connectionADC, I2C_SLAVE, 0x48);
+	ioctl(connectionADC, I2C_SLAVE, i2cAddress);
 
     // Config for AIN0
     // Select configuration register(0x01)

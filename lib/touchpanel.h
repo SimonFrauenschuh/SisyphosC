@@ -17,7 +17,7 @@ extern int connectionTouchpanel;
 void firstSetupTouchpanelUSB();
 
 // Connect to the ADC (I2C)
-void firstSetupTouchpanelADC(uint8_t i2cAddress);
+void firstSetupTouchpanelADC(u_int8_t i2cAddress);
 
 // To use with an USB controller
 // Function to check if the user is root

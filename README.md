@@ -8,7 +8,8 @@
 
 ## Start the application
 1. Navigate to ```BallOnPlateC```
-2. Execute "./ballonplate"
+- For USB-Touchpanel: Execute ```sudo ./ballonplate```
+- For ADC-Touchpanel: Execute ```./ballonplate```
 
 ## Compile the program after changes
 1. For changes in the main program

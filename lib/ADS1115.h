@@ -7,15 +7,15 @@
  */
 #pragma once
 
-#include <stdlib.h>
+#include "ADS1115.c"
 
 // Value to store the I2C connection
-int connectionADC;
+extern int connectionADC;
 // Array to store all Config-Registers
-char config[4][3] = {0};
+extern char config[4][3];
 
 // Function to create the connection via the I2C-Bus
-void initADC();
+void initADC(u_int8_t i2cAddress);
 
 // Function to get the digital value from the given channel (0-3)
 float getVoltage(int channel);

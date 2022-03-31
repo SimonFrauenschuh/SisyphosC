@@ -24,6 +24,7 @@
 void getServoPosition(double* servoPositionX, double* servoPositionY);
 
 int main() {
+
 	// Check if the user is root & connect to touchpanel (USB)
 	checkUser();
 	//firstSetupTouchpanelUSB();

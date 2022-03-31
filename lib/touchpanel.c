@@ -42,18 +42,17 @@ void firstSetupTouchpanelUSB() {
     printf("device name = %s\n\n", name);
 }
 
-void firstSetupTouchpanelADC(uint8_t i2cAddress) {
-    // Connect to the right I2C Adress
-    begin(i2cAddress);
+void firstSetupTouchpanelADC(u_int8_t i2cAddress) {
+    initADC(i2cAddress);
 }
 
 // Function to check if the user is root
 void checkUser() {
-    if ((getuid()) != 0) {
+    /*if ((getuid()) != 0) {
         fprintf(stderr, "---ERROR 5--- You must be on root!\n");
         errorCode = 5;
         exit(5);
-    }
+    }*/
 }
 
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
@@ -96,7 +95,7 @@ void getTouchpanelPositionUSB(int* posX, int* posY) {
 // Function to read from the ADC and convert it into 2 digital values
 void getTouchpanelPositionADC(int* posX, int* posY) {
 
-    uint16_t channel0, channel1;
+    float channel0, channel1;
 
     struct timeval begin, end;
 	long microseconds;
@@ -111,34 +110,34 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     pinMode(26, INPUT);
     pinMode(23, INPUT);
 
-    // 2) Set GPIO 5 & 6 to 3,3V; GPIO 12 & 13 to GND (input);
+    // 2) Set GPIO 21 to 3,3V; GPIO 22 to GND; GPIO 23 & 26 input;
     pinMode(21, OUTPUT);
     pinMode(22, OUTPUT);
-    digitalWrite(26, LOW);
     digitalWrite(21, HIGH);
     digitalWrite(22, LOW);
 
-    // 3) Measure the Voltage
-    channel0 = getVoltage(0);
+    // 3) Measure the Voltage on GPIO 26
+    channel0 = getVoltage(2);
 
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
     *posX = channel0 * 1.31578947 * 304 / 3.3;
+    printf("Channel 2 value %f\n", channel0);
 
-    // 5) Set GPIO 5 & 6 to GND (input); GPIO 12 & 13 to 3,3V;
+    // 5) Set GPIO 23 to 3,3V; GPIO 26 to GND; GPIO 21 & 22 input;
     pinMode(21, INPUT);
     pinMode(22, INPUT);
     pinMode(26, OUTPUT);
     pinMode(23, OUTPUT);
-    digitalWrite(21, LOW);
     digitalWrite(23, HIGH);
     digitalWrite(26, LOW);
 
-    // 6) Measure the Voltage
-    channel1 = getVoltage(2);
+    // 6) Measure the Voltage on GPIO 22
+    channel1 = getVoltage(0);
 
     // 7) Calculate the distance to the edges of the touchpanel
     *posY = channel1 * 1.31578947 * 228 / 3.3;
+    printf("Channel 0 value %f\n", channel1);
 
     // 8) Set the GPIOs back to input (safety and power-efficiency)
     pinMode(26, INPUT);
