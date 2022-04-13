@@ -9,6 +9,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 // For errorCode
 #include "servo.h"
@@ -16,13 +17,12 @@
 // Value to store the I2C connection
 int connectionADC = 0;
 // Array to store all Config-Registers
-char config[4][3] = {0};
+u_int8_t config[4][3] = {0};
 
 // Function to create the connection via the I2C-Bus
 void initADC(u_int8_t i2cAddress) {
     // Create I2C bus
-	char *bus = "/dev/i2c-1";
-	if ((connectionADC = open(bus, O_RDWR)) < 0) 
+	if ((connectionADC = open("/dev/i2c-1", O_RDWR)) < 0) 
 	{
 		printf("Failed to open the bus. \n");
         errorCode = 3;
@@ -34,32 +34,32 @@ void initADC(u_int8_t i2cAddress) {
     // Config for AIN0
     // Select configuration register(0x01)
     config[0][0] = 0x01;
-    // 0x82 --> 1100 0010 --> 7:Start 6-4:Select Channel 1:Voltage 4V
-	config[0][1] = 0xC2;
+    // 0x82 --> 1100 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
+	config[0][1] = 0xC3;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[0][2] = 0xE3;
 
     // Config for AIN1
     // Select configuration register(0x01)
     config[1][0] = 0x01;
-    // 0x82 --> 1101 0010 --> 7:Start 6-4:Select Channel 1:Voltage 4V
-	config[1][1] = 0xD4;
+    // 0x82 --> 1101 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
+	config[1][1] = 0xD5;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[1][2] = 0xE3;
 
     // Config for AIN2
     // Select configuration register(0x01)
     config[2][0] = 0x01;
-    // 0x82 --> 1110 0010 --> 7:Start 6-4:Select Channel 1:Voltage 4V
-	config[2][1] = 0xE4;
+    // 0x82 --> 1110 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
+	config[2][1] = 0xE5;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[2][2] = 0xE3;
 
     // Config for AIN3
     // Select configuration register(0x01)
     config[3][0] = 0x01;
-    // 0x82 --> 1111 0010 --> 7:Start 6-4:Select Channel 1:Voltage 4V
-	config[3][1] = 0xF4;
+    // 0x82 --> 1111 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
+	config[3][1] = 0xF5;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[3][2] = 0xE3;
 }
@@ -72,14 +72,29 @@ float getVoltage(int channel) {
     configChannel[1] = config[channel][1];
     configChannel[2] = config[channel][2];
     // Write onto the ADC via I2C
-	write(connectionADC, configChannel, 3);
-	sleep(1);
+	if (write(connectionADC, configChannel, 3) != 3) {
+        perror("Write to register 1");
+        exit(-1);
+    }
+    do {
+        if (read(connectionADC, configChannel, 2) != 2) {
+            perror("Read conversion");
+            exit(-1);
+        }
+      } while (!(configChannel[0] & 0x80));
 
 	// Read 2 bytes of data from data-register(0x00)
 	// 1:msb, 2:lsb
-	write(connectionADC, 0x00, 1);
-	char data[2]={0};
-    read(connectionADC, data, 2);
+    configChannel[0] = 0;
+    if (write(connectionADC, configChannel, 1) != 1) {
+        perror("Write register select");
+        exit(-1);
+    }
+	u_int8_t data[2];
+    if (read(connectionADC, data, 2) != 2) {
+        perror("Read conversion");
+        exit(-1);
+    }
     // Combine the two bytes into a single 16 bit result
     int16_t val = data[0] << 8 | data[1];
 

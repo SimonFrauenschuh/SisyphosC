@@ -12,7 +12,7 @@
 // Value to store the I2C connection
 extern int connectionADC;
 // Array to store all Config-Registers
-extern char config[4][3];
+extern u_int8_t config[4][3];
 
 // Function to create the connection via the I2C-Bus
 void initADC(u_int8_t i2cAddress);

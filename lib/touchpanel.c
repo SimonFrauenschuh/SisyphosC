@@ -121,8 +121,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
-    *posX = channel0 * 1.31578947 * 304 / 3.3;
-    printf("Channel 2 value %f\n", channel0);
+    *posX = -58 + channel0 * 1.2 * 304 / 3.3;
 
     // 5) Set GPIO 23 to 3,3V; GPIO 26 to GND; GPIO 21 & 22 input;
     pinMode(21, INPUT);
@@ -136,8 +135,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     channel1 = getVoltage(0);
 
     // 7) Calculate the distance to the edges of the touchpanel
-    *posY = channel1 * 1.31578947 * 228 / 3.3;
-    printf("Channel 0 value %f\n", channel1);
+    *posY = -59 + channel1 * 1.3157894 * 228 / 3.3;
 
     // 8) Set the GPIOs back to input (safety and power-efficiency)
     pinMode(26, INPUT);
