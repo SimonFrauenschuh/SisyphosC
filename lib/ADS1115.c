@@ -50,16 +50,16 @@ void initADC(u_int8_t i2cAddress) {
     // Config for AIN2
     // Select configuration register(0x01)
     config[2][0] = 0x01;
-    // 0x82 --> 1110 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
-	config[2][1] = 0xE5;
+    // 0x82 --> 1110 0001 --> 7:Start 6-4:Select Channel 3-1:Voltage 6V 0:Single Conversion
+	config[2][1] = 0xE1;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[2][2] = 0xE3;
 
     // Config for AIN3
     // Select configuration register(0x01)
     config[3][0] = 0x01;
-    // 0x82 --> 1111 0011 --> 7:Start 6-4:Select Channel 1:Voltage 4V 0:Single Conversion
-	config[3][1] = 0xF5;
+    // 0x82 --> 1111 0011 --> 7:Start 6-4:Select Channel 1:Voltage 6V 0:Single Conversion
+	config[3][1] = 0xF1;
     // 0xE3 --> 1110 0011 --> 7-5:Speed 1-0:Disable Comparator
 	config[3][2] = 0xE3;
 }

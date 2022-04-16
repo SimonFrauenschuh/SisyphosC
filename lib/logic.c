@@ -13,7 +13,7 @@
 // Logic for mode single-point (define a point, where the ball should move to)
 void moveToPoint(int xEst, int yEst) {
     // Touchpanel-specific values for the center
-	int xMid = 7800, yMid = 7400;
+	int xMid = 152, yMid = 114;
 	int touchpanelPositionX, touchpanelPositionY;
 	int touchpanelPositionXOld, touchpanelPositionYOld;
 	// Values for the PD-Regulator
@@ -38,15 +38,15 @@ void moveToPoint(int xEst, int yEst) {
     	gettimeofday(&end, 0);
     	microseconds = end.tv_usec - begin.tv_usec;
 		// Calculate the "D" Part of the PD-Controller
-		dX = (touchpanelPositionXOld - touchpanelPositionX) / (microseconds / 730.0);
-		dY = - (touchpanelPositionYOld - touchpanelPositionY) / (microseconds / 730.0);
+		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds); //* 730.0;
+		dY = ((touchpanelPositionYOld - touchpanelPositionY) / microseconds); //* 730.0;
 		// Start measuring time
     	gettimeofday(&begin, 0);
 
-		pX = 408 - (double)(touchpanelPositionX - xMid) / 490;
-		pY = 385 + (double)(touchpanelPositionY - yMid) / 900;
+		pX = 407 - (double)(touchpanelPositionX - xMid); /// 80;
+		pY = 395 - (double)(touchpanelPositionY - yMid); /// 120;
 
 		pwmWrite(PIN_BASE + 1, pX + dX);
-		pwmWrite(PIN_BASE + 0, pY + dY);
+		//pwmWrite(PIN_BASE + 0, pY + dY);
 		}
 }

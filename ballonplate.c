@@ -31,7 +31,7 @@ int main() {
 	firstSetupTouchpanelADC(0x48);
 
 	// Connect and calibrate Servos
-	firstSetupServo();
+	//firstSetupServo();
 	//setServoNull();
 
 	// Connect and calibrate Gyroscope
@@ -41,6 +41,7 @@ int main() {
 
 	// Later: dependending on chosen mode (DB)
 	while (1) 	{
+		//setServoNull();
 		moveToPoint(7800, 7400);
 	}
 
