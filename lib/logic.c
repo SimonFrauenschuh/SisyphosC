@@ -38,15 +38,15 @@ void moveToPoint(int xEst, int yEst) {
     	gettimeofday(&end, 0);
     	microseconds = end.tv_usec - begin.tv_usec;
 		// Calculate the "D" Part of the PD-Controller
-		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds); //* 730.0;
-		dY = ((touchpanelPositionYOld - touchpanelPositionY) / microseconds); //* 730.0;
+		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds) * 10.0;
+		dY = -((touchpanelPositionYOld - touchpanelPositionY) / microseconds) * 10.0;
 		// Start measuring time
     	gettimeofday(&begin, 0);
 
-		pX = 407 - (double)(touchpanelPositionX - xMid); /// 80;
-		pY = 395 - (double)(touchpanelPositionY - yMid); /// 120;
+		pX = 407 - (touchpanelPositionX - xMid) / 6.0;
+		pY = 395 + (touchpanelPositionY - yMid) / 4.0;
 
-		pwmWrite(PIN_BASE + 1, pX + dX);
-		//pwmWrite(PIN_BASE + 0, pY + dY);
-		}
+		pwmWrite(PIN_BASE + 1, (int)(pX + dX));
+		pwmWrite(PIN_BASE + 0, (int)(pY + dY));
+	}
 }
