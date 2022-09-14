@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "logic.c": "cpp",
+        "i2c-dev.h": "c",
+        "ioctl.h": "c"
+    }
+}

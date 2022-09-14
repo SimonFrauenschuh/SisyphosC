@@ -104,7 +104,7 @@ void calibrateGyro() {
 	
 	// Correction for xAxis
 	for (int i = correctionSteps; i <= 20; i += correctionSteps) {
-		setServoDegree(0, i);
+		setServoDegree(0, (double)i);
 		getGyroDegree();
 		correctAngle();
 		
@@ -112,17 +112,17 @@ void calibrateGyro() {
 
 		printf("Uncorrected xAxis: %f     ", gyroscopeXReal);
 		// Tests, wether the measurement was too low or to high
-		while ((gyroscopeXReal - correctionQuality * 10) > i) {
-			gyroscopeXReal -= correctionQuality;
-			correctionGyroscopeAllX[i / correctionSteps - 1]--;
+		while ((gyroscopeYReal - correctionQuality) > i) {
+			gyroscopeYReal -= correctionQuality;
+			correctionGyroscopeAllY[i / correctionSteps - 1]--;
 		}
-		while ((gyroscopeXReal + correctionQuality * 10) < i) {
-			gyroscopeXReal += correctionQuality;
-			correctionGyroscopeAllX[i / correctionSteps - 1]++;
+		while ((gyroscopeYReal + correctionQuality) < i) {
+			gyroscopeYReal += correctionQuality;
+			correctionGyroscopeAllY[i / correctionSteps - 1]++;
 		}
 		printf("Corrected xAxis: %f\n", gyroscopeXReal);
 	}
-	setServoDegree(0, 0);
+	setServoDegree(0, 0.0);
 	
 	// Logic to get the average of all Measurements
 	int allCorrections = 0;
@@ -137,7 +137,7 @@ void calibrateGyro() {
 	// Same as above, but for yAxis
 	int correctionGyroscopeAllY[20 / correctionSteps];
 	for (int i = correctionSteps; i <= 20; i += correctionSteps) {
-		setServoDegree(1, i);
+		setServoDegree(1, (double)i);
 		getGyroDegree();
 		correctAngle();
 		
@@ -145,17 +145,17 @@ void calibrateGyro() {
 
 		printf("Uncorrected yAxis: %f     ", gyroscopeYReal);
 		// Tests, wether the measurement was to low or to high
-		while ((gyroscopeYReal - correctionQuality * 10) > i) {
-			gyroscopeYReal -= correctionQuality;
-			correctionGyroscopeAllY[i / correctionSteps - 1]--;
+		while ((gyroscopeXReal - correctionQuality) > i) {
+			gyroscopeXReal -= correctionQuality;
+			correctionGyroscopeAllX[i / correctionSteps - 1]--;
 		}
-		while ((gyroscopeYReal + correctionQuality * 10) < i) {
-			gyroscopeYReal += correctionQuality;
-			correctionGyroscopeAllY[i / correctionSteps - 1]++;
+		while ((gyroscopeXReal + correctionQuality) < i) {
+			gyroscopeXReal += correctionQuality;
+			correctionGyroscopeAllX[i / correctionSteps - 1]++;
 		}
 		printf("Corrected yAxis: %f\n", gyroscopeYReal);
 	}
-	setServoDegree(1, 0);
+	setServoDegree(1, 0.0);
 	
 	// Logic to get the average of all Measurements
 	allCorrections = 0;
