@@ -88,6 +88,8 @@ void setGyroNull() {
 	gyroscopeYOffset = gyroscopeYReal;
 }
 
+
+// TODO #############################################################################################################
 // Startup Function; Calibrates Gyroscope and provides advanced calibration data for correction
 void calibrateGyro() {
 	// Look Comment in Function

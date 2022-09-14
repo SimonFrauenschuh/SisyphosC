@@ -11,11 +11,12 @@ int errorCode = 0;
 #define PIN_BASE 300
 #define CHANNEL0_MIN 140
 #define CHANNEL0_DIFF 510
-// At home
 #define CHANNEL1_MIN 145
-// In school
-//#define CHANNEL1_MIN 146
 #define CHANNEL1_DIFF 523
+#define CHANNEL2_MIN 
+#define CHANNEL2_DIFF 
+#define CHANNEL3_MIN 
+#define CHANNEL3_DIFF 
 #define HERTZ 60
 
 // First initial setup (connection) for the Servos
@@ -41,9 +42,13 @@ int readServoPosition(int channel) {
 	int oldSet;
 	// Add some extra value to increase wait duration for smaller movements (e.g. 40-->42)
 	if (channel == 0) {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL0_MIN / 1.0;
+		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL0_MIN;
+	} else if (channel == 1) {
+		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL1_MIN;
+	} else if (channel == 2) {
+		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL2_MIN;
 	} else {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL1_MIN  / 1.0;
+		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL3_MIN;
 	}
 	return oldSet;
 }
@@ -60,11 +65,23 @@ int calculateServoPWMSignal(int channel, double degree) {
 		} else {
 			move = (int)(CHANNEL0_DIFF * (degree / 180) + CHANNEL0_MIN);
 		}
-	} else {
+	} else if (channel == 1) {
 		if (degree == 0.0) {
 			move = CHANNEL1_MIN;
 		} else {
 			move = (int)(CHANNEL1_DIFF * (degree / 180) + CHANNEL1_MIN);
+		}
+	} else if (channel == 2) {
+		if (degree == 0.0) {
+			move = CHANNEL2_MIN;
+		} else {
+			move = (int)(CHANNEL2_DIFF * (degree / 180) + CHANNEL2_MIN);
+		}
+	} else {
+		if (degree == 0.0) {
+			move = CHANNEL3_MIN;
+		} else {
+			move = (int)(CHANNEL3_DIFF * (degree / 180) + CHANNEL3_MIN);
 		}
 	}
 	return move;
@@ -76,6 +93,8 @@ void setServoDegree(int channel, double degree) {
 	if (channel == 16) {
 		setServoDegree(0, degree);
 		setServoDegree(1, degree);
+		setServoDegree(2, degree);
+		setServoDegree(3, degree);
 	} else {
 		// Calculate the PWM-Signal
 		int move = calculateServoPWMSignal(channel, degree);
@@ -90,6 +109,10 @@ void setServoDegree(int channel, double degree) {
 		int diffSet;
 		if (channel == 0) {
 			diffSet = (move - oldSet) * 2.2;
+		} else if (channel == 1) {
+			diffSet = (move - oldSet) * 2;
+		} else if (channel == 2) { // TODO #############################################################################################################
+			diffSet = (move - oldSet) * 2;
 		} else {
 			diffSet = (move - oldSet) * 2;
 		}

@@ -48,6 +48,7 @@ int main() {
 	return 0;
 }
 
+// TODO #############################################################################################################
 void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	// Gets the raw PWM Data from the Servo and decrypts the original angle
 	*servoPositionY = readServoPosition(0);
@@ -71,5 +72,5 @@ void getServoPosition(double* servoPositionX, double* servoPositionY) {
 		printf("---ERROR 3--- Gyroscope does not match estimated\n");
 		errorCode = 3;
 		exit(3);
-		}
 	}
+}
