@@ -20,5 +20,5 @@
 - Execute ```make```
 
 ### Note!
-**The Y-Axis is the one, controlled by the lower Servo (Channel 0). The X-Axis ist controlled by the higher Servo (Channel 1).
+**The Y-Axis is the one, controlled by the lower Servo (Channel 0 & 2). The X-Axis ist controlled by the higher Servo (Channel 1 & 3).
 The Makefile doesn't recompile the librarys, if a ".o" file exists. New written librarys or files need to be included in the correct makefile (in most cases the one located under ```.../BallOnPlateC/```).**
