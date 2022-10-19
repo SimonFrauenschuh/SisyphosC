@@ -47,10 +47,10 @@ void moveToPoint(int xEst, int yEst) {
 		pX = 407 - (touchpanelPositionX - xMid) / 6.0;
 		pY = 395 + (touchpanelPositionY - yMid) / 4.0;
 		
-		pwmWrite(PIN_BASE + 0, (int)(pY + dY));
-		pwmWrite(PIN_BASE + 1, (int)(pX + dX));
+		//pwmWrite(PIN_BASE + 0, (int)(pY + dY));
+		//pwmWrite(PIN_BASE + 1, (int)(pX + dX));
 		// TODO #############################################################################################################
-		pwmWrite(PIN_BASE + 2, (int)(pY + dY) + 2);
-		pwmWrite(PIN_BASE + 3, (int)(pX + dX) + 2);
+		//pwmWrite(PIN_BASE + 2, (int)(pY + dY) + 2);
+		//pwmWrite(PIN_BASE + 3, (int)(pX + dX) + 2);
 	}
 }

@@ -32,10 +32,7 @@ int main() {
 
 	// Connect and calibrate Servos
 	firstSetupServo();
-	//setServoNull();
-
-	//pwmWrite(PIN_BASE + 1, 205);
-	setServoDegree(4, 0);
+	setServoNull();
 
 	// Connect and calibrate Gyroscope
 	//firstSetupGyro();
@@ -56,13 +53,11 @@ void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	// Gets the raw PWM Data from the Servo and decrypts the original angle
 	*servoPositionY = readServoPosition(0);
 	*servoPositionX = readServoPosition(1);
-	*servoPositionX -= CHANNEL1_MIN * 2;
+	*servoPositionX -= CHANNEL1_MID * 2;
 	*servoPositionX *= 180;
-	*servoPositionX /= CHANNEL1_DIFF;
 	*servoPositionX -= 90;
-	*servoPositionY -= CHANNEL0_MIN * 2;
+	*servoPositionY -= CHANNEL0_MID * 2;
 	*servoPositionY *= 180;
-	*servoPositionY /= CHANNEL0_DIFF;
 	*servoPositionY -= 89;
 
 	// Correct the values, measured by the Gyroscope
