@@ -116,11 +116,11 @@ void calibrateGyro() {
 		// Tests, wether the measurement was too low or to high
 		while ((gyroscopeYReal - correctionQuality) > i) {
 			gyroscopeYReal -= correctionQuality;
-			correctionGyroscopeAllY[i / correctionSteps - 1]--;
+			correctionGyroscopeAllX[i / correctionSteps - 1]--;
 		}
 		while ((gyroscopeYReal + correctionQuality) < i) {
 			gyroscopeYReal += correctionQuality;
-			correctionGyroscopeAllY[i / correctionSteps - 1]++;
+			correctionGyroscopeAllX[i / correctionSteps - 1]++;
 		}
 		printf("Corrected xAxis: %f\n", gyroscopeXReal);
 	}
@@ -147,13 +147,13 @@ void calibrateGyro() {
 
 		printf("Uncorrected yAxis: %f     ", gyroscopeYReal);
 		// Tests, wether the measurement was to low or to high
-		while ((gyroscopeXReal - correctionQuality) > i) {
-			gyroscopeXReal -= correctionQuality;
-			correctionGyroscopeAllX[i / correctionSteps - 1]--;
+		while ((gyroscopeYReal - correctionQuality) > i) {
+			gyroscopeYReal -= correctionQuality;
+			correctionGyroscopeAllY[i / correctionSteps - 1]--;
 		}
-		while ((gyroscopeXReal + correctionQuality) < i) {
-			gyroscopeXReal += correctionQuality;
-			correctionGyroscopeAllX[i / correctionSteps - 1]++;
+		while ((gyroscopeYReal + correctionQuality) < i) {
+			gyroscopeYReal += correctionQuality;
+			correctionGyroscopeAllY[i / correctionSteps - 1]++;
 		}
 		printf("Corrected yAxis: %f\n", gyroscopeYReal);
 	}

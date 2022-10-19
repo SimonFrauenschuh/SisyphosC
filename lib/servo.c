@@ -9,14 +9,18 @@ int errorCode = 0;
 #pragma once
 
 #define PIN_BASE 300
-#define CHANNEL0_MIN 140
+// Servo bottom left
+#define CHANNEL0_MIN 270
 #define CHANNEL0_DIFF 510
-#define CHANNEL1_MIN 145
+// Servo bottom right
+#define CHANNEL1_MIN 205
 #define CHANNEL1_DIFF 523
-#define CHANNEL2_MIN 
-#define CHANNEL2_DIFF 
-#define CHANNEL3_MIN 
-#define CHANNEL3_DIFF 
+// Servo top left
+#define CHANNEL2_MIN 140
+#define CHANNEL2_DIFF 435
+// Servo top right
+#define CHANNEL3_MIN 140
+#define CHANNEL3_DIFF 496
 #define HERTZ 60
 
 // First initial setup (connection) for the Servos

@@ -32,7 +32,10 @@ int main() {
 
 	// Connect and calibrate Servos
 	firstSetupServo();
-	setServoNull();
+	//setServoNull();
+
+	//pwmWrite(PIN_BASE + 1, 205);
+	setServoDegree(4, 0);
 
 	// Connect and calibrate Gyroscope
 	//firstSetupGyro();
@@ -41,7 +44,7 @@ int main() {
 
 	// Later: dependending on chosen mode (DB)
 	while (1) 	{
-		moveToPoint(152, 114);
+		//moveToPoint(152, 114);
 	}
 
 	printf("\n\nError Code: %d\n", errorCode);

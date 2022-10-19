@@ -2,6 +2,7 @@
     "files.associations": {
         "logic.c": "cpp",
         "i2c-dev.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "pca9685.h": "c"
     }
 }
