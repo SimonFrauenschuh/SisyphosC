@@ -7,6 +7,7 @@
  */
 #include <sys/time.h>
 #include "touchpanel.h"
+#include "servo.h"
 
 #pragma once
 
@@ -39,18 +40,17 @@ void moveToPoint(int xEst, int yEst) {
     	gettimeofday(&end, 0);
     	microseconds = end.tv_usec - begin.tv_usec;
 		// Calculate the "D" Part of the PD-Controller
-		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds) * 10.0;
-		dY = -((touchpanelPositionYOld - touchpanelPositionY) / microseconds) * 10.0;
+		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds) * 1.0;
+		dY = -((touchpanelPositionYOld - touchpanelPositionY) / microseconds) * 1.0;
 		// Start measuring time
     	gettimeofday(&begin, 0);
 
-		pX = 407 - (touchpanelPositionX - xMid) / 6.0;
-		pY = 395 + (touchpanelPositionY - yMid) / 4.0;
+		pX = (touchpanelPositionX - xMid) / 6.0;
+		pY = (touchpanelPositionY - yMid) / 40.0;
 		
-		//pwmWrite(PIN_BASE + 0, (int)(pY + dY));
-		//pwmWrite(PIN_BASE + 1, (int)(pX + dX));
-		// TODO #############################################################################################################
-		//pwmWrite(PIN_BASE + 2, (int)(pY + dY) + 2);
-		//pwmWrite(PIN_BASE + 3, (int)(pX + dX) + 2);
+		pwmWrite(PIN_BASE + 0, CHANNEL0_MID + (int)(pY + dY));
+		pwmWrite(PIN_BASE + 1, CHANNEL1_MID - (int)(pY + dY));
+		pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (int)(pX + dX));
+		pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (int)(pX + dX));
 	}
 }

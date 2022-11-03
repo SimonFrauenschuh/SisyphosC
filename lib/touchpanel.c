@@ -119,7 +119,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
-    *posX = -58 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
+    *posX = -8 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
 
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
