@@ -23,7 +23,7 @@ void moveToPoint(int xEst, int yEst) {
 
 	// Used for the "D" Part of the PD-Controller
 	struct timeval begin, end;
-	long microseconds;
+	long milliseconds;
 
 	// Start measuring time
     gettimeofday(&begin, 0);
@@ -38,18 +38,18 @@ void moveToPoint(int xEst, int yEst) {
 
 		// Stop measuring time and calculate the elapsed time
     	gettimeofday(&end, 0);
-    	microseconds = end.tv_usec - begin.tv_usec;
+    	milliseconds = (end.tv_usec - begin.tv_usec) / 1000;
 		// Calculate the "D" Part of the PD-Controller
-		dX = ((touchpanelPositionXOld - touchpanelPositionX) / microseconds) * 1.0;
-		dY = -((touchpanelPositionYOld - touchpanelPositionY) / microseconds) * 1.0;
+		dX = -15 * (touchpanelPositionXOld - touchpanelPositionX) / milliseconds;
+		dY = -15 * (touchpanelPositionYOld - touchpanelPositionY) / milliseconds;
 		// Start measuring time
     	gettimeofday(&begin, 0);
 
-		pX = (touchpanelPositionX - xMid) / 6.0;
-		pY = (touchpanelPositionY - yMid) / 40.0;
+		pX = (int)((touchpanelPositionX - xMid) / 10.0)^3;
+		pY = (int)((touchpanelPositionY - yMid) / 7.0)^3;
 		
-		pwmWrite(PIN_BASE + 0, CHANNEL0_MID + (int)(pY + dY));
-		pwmWrite(PIN_BASE + 1, CHANNEL1_MID - (int)(pY + dY));
+		pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (int)(pY + dY));
+		pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (int)(pY + dY));
 		pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (int)(pX + dX));
 		pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (int)(pX + dX));
 	}

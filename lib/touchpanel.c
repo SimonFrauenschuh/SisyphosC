@@ -46,13 +46,14 @@ void firstSetupTouchpanelADC(u_int8_t i2cAddress) {
     initADC(i2cAddress);
 }
 
+// To use with an USB controller
 // Function to check if the user is root
 void checkUser() {
-    /*if ((getuid()) != 0) {
+    if ((getuid()) != 0) {
         fprintf(stderr, "---ERROR 5--- You must be on root!\n");
         errorCode = 5;
         exit(5);
-    }*/
+    }
 }
 
 // Function to read from the Touchpanel (driver) and write onto the given Pointers
@@ -97,11 +98,6 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     float channel0, channel2;
 
-    struct timeval begin, end;
-	long microseconds;
-	// Start measuring time
-    gettimeofday(&begin, 0);
-
     // Logic for getting the touchpanel-position (https://de.wikipedia.org/wiki/Touchscreen)
     // 1) Initialize the GPIO library
     wiringPiSetup();
@@ -140,7 +136,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     channel0 = getVoltage(0);
 
     // 7) Calculate the distance to the edges of the touchpanel
-    *posY = -59 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
+    *posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
 
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
@@ -152,8 +148,4 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     // 8) Set the GPIOs back to input (safety and power-efficiency)
     pinMode(26, INPUT);
     pinMode(23, INPUT);
-
-    gettimeofday(&end, 0);
-    microseconds = end.tv_usec - begin.tv_usec;
-    printf("%ld\n", microseconds / 1000);
 }
