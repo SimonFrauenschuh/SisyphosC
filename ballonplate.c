@@ -41,7 +41,7 @@ int main() {
 
 	// Later: dependending on chosen mode (DB)
 	while (1) 	{
-		moveToPoint(152, 114);
+		moveToPoint(179, 106);
 	}
 
 	printf("\n\nError Code: %d\n", errorCode);
