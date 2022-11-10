@@ -10,9 +10,9 @@ int errorCode = 0;
 
 #define PIN_BASE 300
 // Servo bottom left
-#define CHANNEL0_MID 515
+#define CHANNEL0_MID 520
 // Servo bottom right
-#define CHANNEL1_MID 467
+#define CHANNEL1_MID 462
 // Servo top left
 #define CHANNEL2_MID 362
 // Servo top right
