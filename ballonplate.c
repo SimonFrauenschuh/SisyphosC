@@ -12,6 +12,7 @@
 #include "lib/servo.h"
 #include "lib/gyroscope.h"
 #include "lib/logic.h"
+#include "lib/database.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +39,11 @@ int main() {
 	//firstSetupGyro();
 	//calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
+
+	createDBconnection();
+	int erg;
+	readDatabase("xreal", erg);
+	killDBconnection();
 
 	// Later: dependending on chosen mode (DB)
 	while (1) 	{
