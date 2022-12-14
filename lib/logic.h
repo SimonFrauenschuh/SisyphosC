@@ -11,3 +11,6 @@
 
 // Logic for mode single-point (define a point, where the ball should move to)
 void moveToPoint(int xEst, int yEst);
+
+// Synchronize with the angle, given by the database (the phones gyroscope)
+void moveToAngle(int xEst, int yEst);

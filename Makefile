@@ -13,7 +13,7 @@
 
 # Including all the needed librarys
 LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
-CPPFLAGS = -I/usr/local/pgsql/include
+CPPFLAGS = -I/usr/include/postgresql
 LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
 LDGYRO = -L/home/pi/Desktop/BallOnPlateC/lib/gyroscope.h
 LDTOUCH = -L/home/pi/Desktop/BallOnPlateC/lib/touchpanel.h
@@ -24,10 +24,10 @@ CXXFLAGS = -std=c99
 
 # Two-Step-Compiling
 ballonplate:	ballonplate.o
-	@gcc $(LDLIBS) $(LDSERVO) $(LDGYRO) $(LDTOUCH) $(LDLOGIC) $(LDADC) $(CPPFLAGS) -lpq $< -o $@
+	@gcc $(LDLIBS) $(LDSERVO) $(LDGYRO) $(LDTOUCH) $(LDLOGIC) $(LDADC) $(CXXFLAGS) -lpq $< -o $@
 	
 ballonplate.o: ballonplate.c
-	@gcc -c ballonplate.c
+	@gcc -c ballonplate.c $(CPPFLAGS) 
 
 # Delete the ".o" files
 .PHONY: clean

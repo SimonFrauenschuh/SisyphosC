@@ -50,9 +50,9 @@ void firstSetupTouchpanelADC(u_int8_t i2cAddress) {
 // Function to check if the user is root
 void checkUser() {
     if ((getuid()) != 0) {
-        fprintf(stderr, "---ERROR 5--- You must be on root!\n");
-        errorCode = 5;
-        exit(5);
+        fprintf(stderr, "---ERROR 6--- You must be on root!\n");
+        errorCode = 6;
+        exit(6);
     }
 }
 
@@ -76,10 +76,10 @@ void getTouchpanelPositionUSB(int* posX, int* posY) {
         // Read from the Event0 file
         size = read(connectionTouchpanel, &ev, ev_size);
         if (size < ev_size) {
-            fprintf(stderr, "---ERROR 6--- Can't read device");
-            errorCode = 6;
+            fprintf(stderr, "---ERROR 7--- Can't read device");
+            errorCode = 7;
             close(connectionTouchpanel);
-            exit(6);
+            exit(7);
         }
         // If a read value is X or Y jump into and write onto the given Pointers
         if (ev.type == EVENT_TYPE && (ev.code == EVENT_CODE_X || ev.code == EVENT_CODE_Y)) {

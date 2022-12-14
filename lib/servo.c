@@ -62,13 +62,13 @@ int calculateServoPWMSignal(int channel, double degree) {
 		if (degree == 0.0) {
 			move = CHANNEL0_MID;
 		} else {
-			move = (int)(CHANNEL0_MID + degree);
+			move = (int)(CHANNEL0_MID - degree);
 		}
 	} else if (channel == 1) {
 		if (degree == 0.0) {
 			move = CHANNEL1_MID;
 		} else {
-			move = (int)(CHANNEL1_MID - degree);
+			move = (int)(CHANNEL1_MID + degree);
 		}
 	} else if (channel == 2) {
 		if (degree == 0.0) {
@@ -98,28 +98,8 @@ void setServoDegree(int channel, double degree) {
 		// Calculate the PWM-Signal
 		int move = calculateServoPWMSignal(channel, degree);
 	
-		// Read the previous set from Controller to calculate later the duration for waiting, until the servo is in the right position
-		int oldSet = readServoPosition(channel);
-	
 		// Move the Servo
 		pwmWrite(PIN_BASE + channel, move);
-	
-		// Calculate the waiting duration
-		int diffSet;
-		if (channel == 0) {
-			diffSet = (move - oldSet) * 1.0;
-		} else if (channel == 1) {
-			diffSet = (move - oldSet) * 1.0;
-		} else if (channel == 2) {
-			diffSet = (move - oldSet) * 1.0;
-		} else {
-			diffSet = (move - oldSet) * 1.0;
-		}
-		if (diffSet > 0) {
-			delay(diffSet);
-		} else {
-			delay(-diffSet);
-		}
 	}
 }
 

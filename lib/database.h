@@ -16,7 +16,7 @@ void createDBconnection();
 void killDBconnection();
 
 // To read the value with the highest index from a row
-int readDatabase(char *rowName, int *result);
+int readDatabase(char *rowName);
 
 // To register a value to a specific row
 int writeDatabase(char *rowName, int xReal, int yReal, int error);

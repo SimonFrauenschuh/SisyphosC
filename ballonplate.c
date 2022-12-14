@@ -40,16 +40,22 @@ int main() {
 	//calibrateGyro();
 	printf("====================\nCalibration finished\n====================\n\n");
 
+	// Initialize the db-connection
 	createDBconnection();
-	int erg;
-	readDatabase("xreal", erg);
-	killDBconnection();
+	int mode, xEst, yEst;
 
-	// Later: dependending on chosen mode (DB)
-	while (1) 	{
-		moveToPoint(179, 106);
+	while (errorCode == 0) {
+		mode = readDatabase("mode");
+		xEst = readDatabase("xest");
+		yEst = readDatabase("yest");
+
+		if (mode == 1) {
+			moveToAngle(xEst, yEst);
+		} else {
+			moveToPoint(179, 106);
+		}
 	}
-
+	killDBconnection();
 	printf("\n\nError Code: %d\n", errorCode);
 	return 0;
 }
@@ -73,8 +79,8 @@ void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	// Control, if the two values match nearly, else write a error code to the DB
 	int deviation = 1000;
 	if ((gyroscopeXReal > (*servoPositionX + deviation)) || (gyroscopeXReal < (*servoPositionX - deviation)) || (gyroscopeYReal > (*servoPositionY + deviation)) || (gyroscopeYReal < (*servoPositionY - deviation))) 	{
-		printf("---ERROR 3--- Gyroscope does not match estimated\n");
-		errorCode = 3;
-		exit(3);
+		printf("---ERROR 5--- Gyroscope does not match estimated\n");
+		errorCode = 5;
+		exit(5);
 	}
 }

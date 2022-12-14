@@ -96,3 +96,21 @@ void moveToPoint(int xEst, int yEst) {
 		}
 	}
 }
+
+// Synchronize with the angle, given by the database (the phones gyroscope)
+void moveToAngle(int xEst, int yEst) {
+	if (xEst > 20) {
+		xEst = 20;
+	} else if (xEst < -20) {
+		xEst = -20;
+	}
+	if (yEst > 20) {
+		yEst = 20;
+	} else if (yEst < -20) {
+		yEst = -20;
+	}
+	setServoDegree(0, xEst);
+	setServoDegree(1, xEst);
+	setServoDegree(2, yEst);
+	setServoDegree(3, yEst);
+}
