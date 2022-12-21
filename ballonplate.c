@@ -10,7 +10,6 @@
 // Password Token: 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
 
 #include "lib/servo.h"
-#include "lib/gyroscope.h"
 #include "lib/logic.h"
 #include "lib/database.h"
 
@@ -71,16 +70,4 @@ void getServoPosition(double* servoPositionX, double* servoPositionY) {
 	*servoPositionY -= CHANNEL0_MID * 2;
 	*servoPositionY *= 180;
 	*servoPositionY -= 89;
-
-	// Correct the values, measured by the Gyroscope
-	getGyroDegree();
-	correctAngle();
-
-	// Control, if the two values match nearly, else write a error code to the DB
-	int deviation = 1000;
-	if ((gyroscopeXReal > (*servoPositionX + deviation)) || (gyroscopeXReal < (*servoPositionX - deviation)) || (gyroscopeYReal > (*servoPositionY + deviation)) || (gyroscopeYReal < (*servoPositionY - deviation))) 	{
-		printf("---ERROR 5--- Gyroscope does not match estimated\n");
-		errorCode = 5;
-		exit(5);
-	}
 }
