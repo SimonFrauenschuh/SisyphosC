@@ -8,6 +8,7 @@
 
 #include <libpq-fe.h>
 #include <string.h>
+#include <stdio.h>
 
 PGconn *conn;
 
@@ -42,6 +43,7 @@ int readDatabase(char *rowName) {
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         errorCode = 8;
         fprintf(stderr, "---ERROR 8--- No data retrieved\n");
+        killDBconnection(conn);
         exit(8);
     }    
     
@@ -51,7 +53,52 @@ int readDatabase(char *rowName) {
     return result;
 }
 
-// To register a value to a specific row
-int writeDatabase(char *rowName, int xReal, int yReal, int error) {
+// To register a value to the db
+int writeDatabase(int xEst, int yEst, int xReal, int yReal, int mode, int errorCode) {
+    /*PGresult *res = PQexec(conn, "BEGIN");    
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 
+        printf("BEGIN command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    }
+
+    char select[70] = "INSERT INTO databasemodel VALUES(MAX( id ) + 1, ";
+    char valueString[3];
+    snprintf( xEstStr, 3, "%i", xEst );
+    strcat(select, valueString);
+    strcat(select, ",");
+    snprintf( xEstStr, 3, "%i", yEst );
+    strcat(select, valueString);
+    strcat(select, ",");
+    snprintf( xEstStr, 3, "%i", xReal );
+    strcat(select, valueString);
+    strcat(select, ",");
+    snprintf( xEstStr, 3, "%i", yReal );
+    strcat(select, valueString);
+    strcat(select, ",");
+    // CONVERT TO CHAR ARRAY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    strcat(select, mode);
+    strcat(select, ",");
+    strcat(select, errorCode);
+    strcat(select, ")");
+    res = PQexec(conn, select);
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+
+        printf("INSERT command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    }       
+    
+    res = PQexec(conn, "COMMIT"); 
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+
+        printf("COMMIT command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    }
+    */
 }

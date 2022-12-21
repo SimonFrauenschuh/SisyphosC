@@ -9,6 +9,7 @@
 #include <math.h>
 #include "touchpanel.h"
 #include "servo.h"
+#include "database.h"
 
 #pragma once
 
@@ -113,4 +114,9 @@ void moveToAngle(int xEst, int yEst) {
 	setServoDegree(1, xEst);
 	setServoDegree(2, yEst);
 	setServoDegree(3, yEst);
+
+	//int xReal, yReal;
+	//getTouchpanelPositionADC(&xReal, &yReal);
+
+	//writeDatabase(xEst, yEst, xReal, yReal, 1, errorCode);
 }
