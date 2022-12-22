@@ -19,4 +19,4 @@ void killDBconnection();
 int readDatabase(char *rowName);
 
 // To register a value to a specific row
-int writeDatabase(int xEst, int yEst, int xReal, int yReal, int mode, int errorCode);
+int writeDatabase(int xReal, int yReal);

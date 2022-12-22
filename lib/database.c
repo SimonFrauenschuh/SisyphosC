@@ -54,8 +54,8 @@ int readDatabase(char *rowName) {
 }
 
 // To register a value to the db
-int writeDatabase(int xEst, int yEst, int xReal, int yReal, int mode, int errorCode) {
-    /*PGresult *res = PQexec(conn, "BEGIN");    
+int writeDatabase(int xReal, int yReal) {
+    PGresult *res = PQexec(conn, "BEGIN");    
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 
@@ -64,33 +64,27 @@ int writeDatabase(int xEst, int yEst, int xReal, int yReal, int mode, int errorC
         killDBconnection(conn);
     }
 
-    char select[70] = "INSERT INTO databasemodel VALUES(MAX( id ) + 1, ";
+    // Modify the real x-value of the highest id
+    char updateX[85] = "UPDATE databasemodel SET xreal=";
     char valueString[3];
-    snprintf( xEstStr, 3, "%i", xEst );
-    strcat(select, valueString);
-    strcat(select, ",");
-    snprintf( xEstStr, 3, "%i", yEst );
-    strcat(select, valueString);
-    strcat(select, ",");
-    snprintf( xEstStr, 3, "%i", xReal );
-    strcat(select, valueString);
-    strcat(select, ",");
-    snprintf( xEstStr, 3, "%i", yReal );
-    strcat(select, valueString);
-    strcat(select, ",");
-    // CONVERT TO CHAR ARRAY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    strcat(select, mode);
-    strcat(select, ",");
-    strcat(select, errorCode);
-    strcat(select, ")");
-    res = PQexec(conn, select);
+    snprintf(valueString, 3, "%i", xReal);
+    strcat(updateX, valueString);
+    strcat(updateX, " WHERE id=(select max(id) from databasemodel)");
+    res = PQexec(conn, updateX);
+
+    // Modify the real y-value of the highest id
+    char updateY[85] = "UPDATE databasemodel SET yreal=";
+    snprintf(valueString, 3, "%i", yReal);
+    strcat(updateY, valueString);
+    strcat(updateY, " WHERE id=(select max(id) from databasemodel)");
+    res = PQexec(conn, updateY); 
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 
-        printf("INSERT command failed\n");        
+        printf("UPDATE command failed\n");        
         PQclear(res);
         killDBconnection(conn);
-    }       
+    } 
     
     res = PQexec(conn, "COMMIT"); 
     
@@ -100,5 +94,4 @@ int writeDatabase(int xEst, int yEst, int xReal, int yReal, int mode, int errorC
         PQclear(res);
         killDBconnection(conn);
     }
-    */
 }

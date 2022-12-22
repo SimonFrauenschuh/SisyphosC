@@ -37,6 +37,7 @@ void moveToPoint(int xEst, int yEst) {
 
 		getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
 		//getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
+		writeDatabase(touchpanelPositionX, touchpanelPositionY);
 		printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 
 		// Control, if there isn't a misread value from the touchpad
@@ -115,8 +116,8 @@ void moveToAngle(int xEst, int yEst) {
 	setServoDegree(2, yEst);
 	setServoDegree(3, yEst);
 
-	//int xReal, yReal;
-	//getTouchpanelPositionADC(&xReal, &yReal);
+	int xReal, yReal;
+	getTouchpanelPositionADC(&xReal, &yReal);
 
-	//writeDatabase(xEst, yEst, xReal, yReal, 1, errorCode);
+	writeDatabase(xReal, yReal);
 }
