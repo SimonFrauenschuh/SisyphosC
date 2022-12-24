@@ -101,6 +101,8 @@ void moveToPoint(int xEst, int yEst) {
 
 // Synchronize with the angle, given by the database (the phones gyroscope)
 void moveToAngle(int xEst, int yEst) {
+	xEst /= 2;
+	yEst /= 2;
 	if (xEst > 20) {
 		xEst = 20;
 	} else if (xEst < -20) {
@@ -113,8 +115,8 @@ void moveToAngle(int xEst, int yEst) {
 	}
 	setServoDegree(0, xEst);
 	setServoDegree(1, xEst);
-	setServoDegree(2, yEst);
-	setServoDegree(3, yEst);
+	setServoDegree(2, -yEst);
+	setServoDegree(3, -yEst);
 
 	int xReal, yReal;
 	getTouchpanelPositionADC(&xReal, &yReal);

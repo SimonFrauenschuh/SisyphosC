@@ -66,15 +66,15 @@ int writeDatabase(int xReal, int yReal) {
 
     // Modify the real x-value of the highest id
     char updateX[85] = "UPDATE databasemodel SET xreal=";
-    char valueString[3];
-    snprintf(valueString, 3, "%i", xReal);
+    char valueString[4];
+    snprintf(valueString, 4, "%i", xReal);
     strcat(updateX, valueString);
     strcat(updateX, " WHERE id=(select max(id) from databasemodel)");
     res = PQexec(conn, updateX);
 
     // Modify the real y-value of the highest id
     char updateY[85] = "UPDATE databasemodel SET yreal=";
-    snprintf(valueString, 3, "%i", yReal);
+    snprintf(valueString, 4, "%i", yReal);
     strcat(updateY, valueString);
     strcat(updateY, " WHERE id=(select max(id) from databasemodel)");
     res = PQexec(conn, updateY); 
