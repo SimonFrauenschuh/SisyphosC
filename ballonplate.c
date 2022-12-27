@@ -18,10 +18,6 @@
 #include <stdlib.h>
 #include <pthread.h>
 
-// Reads out the current position from the Servo-Driver and the Gyroscope
-// If the deviation of those two values is too high, an error code is sent
-void getServoPosition(double* servoPositionX, double* servoPositionY);
-
 int main() {
 
 	// Check if the user is root & connect to touchpanel (USB)
@@ -29,14 +25,9 @@ int main() {
 	//firstSetupTouchpanelUSB();
 	firstSetupTouchpanelADC(0x48);
 
-	// Connect and calibrate Servos
+	// Connect ato Servos
 	firstSetupServo();
 	setServoNull();
-
-	// Connect and calibrate Gyroscope
-	//firstSetupGyro();
-	//calibrateGyro();
-	printf("====================\nCalibration finished\n====================\n\n");
 
 	// Initialize the db-connection
 	createDBconnection();
@@ -46,8 +37,10 @@ int main() {
 	pthread_t tid;
 	pthread_create(&tid, NULL, &threadproc, NULL);
 
+	printf("====================\nInitialization finished\n====================\n\n");
+
 	while (errorCode == 0) {
-		mode = 0;//readDatabase("mode");
+		mode = readDatabase("mode");
 		xEst = readDatabase("xest");
 		yEst = readDatabase("yest");
 
@@ -58,6 +51,5 @@ int main() {
 		}
 	}
 	killDBconnection();
-	printf("\n\nError Code: %d\n", errorCode);
 	return 0;
 }

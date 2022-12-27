@@ -43,7 +43,7 @@ int readDatabase(char *rowName) {
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         errorCode = 8;
         fprintf(stderr, "---ERROR 8--- No data retrieved\n");
-        killDBconnection(conn);
+        killDBconnection();
         exit(8);
     }    
     
@@ -60,7 +60,7 @@ int writeDatabaseXY(int xReal, int yReal) {
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         printf("BEGIN command failed\n");        
         PQclear(res);
-        killDBconnection(conn);
+        killDBconnection();
     }
 
     // Modify the real x-value of the highest id
@@ -81,7 +81,7 @@ int writeDatabaseXY(int xReal, int yReal) {
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         printf("UPDATE command failed\n");        
         PQclear(res);
-        killDBconnection(conn);
+        killDBconnection();
     } 
     
     res = PQexec(conn, "COMMIT"); 
@@ -89,6 +89,6 @@ int writeDatabaseXY(int xReal, int yReal) {
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         printf("COMMIT command failed\n");        
         PQclear(res);
-        killDBconnection(conn);
+        killDBconnection();
     }
 }

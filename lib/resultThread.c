@@ -11,13 +11,12 @@ int checkMode() {
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         errorCode = 8;
         fprintf(stderr, "---ERROR 8--- No data retrieved\n");
-        killDBconnection(connThread);
+        PQfinish(connThread);
         exit(8);
     }    
     
     int rows = PQntuples(res);
     int result = atoi(PQgetvalue(res, 0, 0));
-    printf("Mode: %i\n", result);
     PQclear(res);
     return result;
 }
@@ -61,7 +60,7 @@ void *threadproc(void *arg) {
 		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 			printf("BEGIN command failed\n");        
 			PQclear(res);
-			killDBconnection(connThread);
+			PQfinish(connThread);
 		}
 
 		// Modify the real x-value of the highest id
@@ -75,7 +74,7 @@ void *threadproc(void *arg) {
 		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 			printf("UPDATE command failed\n");        
 			PQclear(res);
-			killDBconnection(connThread);
+			PQfinish(connThread);
 		} 
 			
 		res = PQexec(connThread, "COMMIT"); 
@@ -83,7 +82,7 @@ void *threadproc(void *arg) {
 		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
 			printf("COMMIT command failed\n");        
 			PQclear(res);
-			killDBconnection(connThread);
+			PQfinish(connThread);
 		}
 	}
 }
