@@ -18,5 +18,8 @@ void killDBconnection();
 // To read the value with the highest index from a row
 int readDatabase(char *rowName);
 
-// To register a value to a specific row
-int writeDatabase(int xReal, int yReal);
+// To register a value to the last row of the table
+int writeDatabaseXY(int xReal, int yReal);
+
+// To register a value to the last row of the table
+int writeDatabaseResult(int result);

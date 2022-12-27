@@ -12,12 +12,11 @@
 #include "lib/servo.h"
 #include "lib/logic.h"
 #include "lib/database.h"
+#include "lib/resultThread.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-
-// Defined in servo.h
-// int errorCode = 0;
+#include <pthread.h>
 
 // Reads out the current position from the Servo-Driver and the Gyroscope
 // If the deviation of those two values is too high, an error code is sent
@@ -42,6 +41,10 @@ int main() {
 	// Initialize the db-connection
 	createDBconnection();
 	int mode, xEst, yEst;
+
+	// Create a thread for updating the result in the db every second
+	pthread_t tid;
+	pthread_create(&tid, NULL, &threadproc, NULL);
 
 	while (errorCode == 0) {
 		mode = readDatabase("mode");

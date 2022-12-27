@@ -34,7 +34,7 @@ void killDBconnection() {
 int readDatabase(char *rowName) {
 
     char select[70] = "SELECT ";
-    char from[] = " FROM databasemodel ORDER BY id DESC LIMIT 1";
+    char from[] = " FROM postouchpanel ORDER BY id DESC LIMIT 1";
     strcat(select, rowName);
     strcat(select, from);
 
@@ -53,34 +53,32 @@ int readDatabase(char *rowName) {
     return result;
 }
 
-// To register a value to the db
-int writeDatabase(int xReal, int yReal) {
+// To register a value to the last row of the table
+int writeDatabaseXY(int xReal, int yReal) {
     PGresult *res = PQexec(conn, "BEGIN");    
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-
         printf("BEGIN command failed\n");        
         PQclear(res);
         killDBconnection(conn);
     }
 
     // Modify the real x-value of the highest id
-    char updateX[85] = "UPDATE databasemodel SET xreal=";
+    char updateX[85] = "UPDATE postouchpanel SET xreal=";
     char valueString[4];
     snprintf(valueString, 4, "%i", xReal);
     strcat(updateX, valueString);
-    strcat(updateX, " WHERE id=(select max(id) from databasemodel)");
+    strcat(updateX, " WHERE id=(select max(id) from postouchpanel)");
     res = PQexec(conn, updateX);
 
     // Modify the real y-value of the highest id
-    char updateY[85] = "UPDATE databasemodel SET yreal=";
+    char updateY[85] = "UPDATE postouchpanel SET yreal=";
     snprintf(valueString, 4, "%i", yReal);
     strcat(updateY, valueString);
-    strcat(updateY, " WHERE id=(select max(id) from databasemodel)");
+    strcat(updateY, " WHERE id=(select max(id) from postouchpanel)");
     res = PQexec(conn, updateY); 
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-
         printf("UPDATE command failed\n");        
         PQclear(res);
         killDBconnection(conn);
@@ -89,7 +87,39 @@ int writeDatabase(int xReal, int yReal) {
     res = PQexec(conn, "COMMIT"); 
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        printf("COMMIT command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    }
+}
 
+// To register a value to the last row of the table
+int writeDatabaseResult(int result) {
+    PGresult *res = PQexec(conn, "BEGIN");    
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        printf("BEGIN command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    }
+
+    // Modify the real x-value of the highest id
+    char updateX[85] = "UPDATE result SET result=";
+    char valueString[4];
+    snprintf(valueString, 4, "%i", result);
+    strcat(updateX, valueString);
+    strcat(updateX, " WHERE id=(select max(id) from result)");
+    res = PQexec(conn, updateX);
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        printf("UPDATE command failed\n");        
+        PQclear(res);
+        killDBconnection(conn);
+    } 
+    
+    res = PQexec(conn, "COMMIT"); 
+    
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         printf("COMMIT command failed\n");        
         PQclear(res);
         killDBconnection(conn);
