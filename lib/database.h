@@ -20,6 +20,3 @@ int readDatabase(char *rowName);
 
 // To register a value to the last row of the table
 int writeDatabaseXY(int xReal, int yReal);
-
-// To register a value to the last row of the table
-int writeDatabaseResult(int result);

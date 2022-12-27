@@ -44,9 +44,6 @@
 
 // Declare
 static void myPwmWrite(struct wiringPiNodeStruct *node, int pin, int value);
-static void myOnOffWrite(struct wiringPiNodeStruct *node, int pin, int value);
-static int myOffRead(struct wiringPiNodeStruct *node, int pin);
-static int myOnRead(struct wiringPiNodeStruct *node, int pin);
 int baseReg(int pin);
 
 
@@ -84,9 +81,6 @@ int pca9685Setup(const int pinBase, const int i2cAddress, float freq)
 
 	node->fd			= fd;
 	node->pwmWrite		= myPwmWrite;
-	node->digitalWrite	= myOnOffWrite;
-	node->digitalRead	= myOffRead;
-	node->analogRead	= myOnRead;
 
 	return fd;
 }
@@ -144,58 +138,6 @@ void pca9685PWMWrite(int fd, int pin, int on, int off)
 }
 
 /**
- * Reads both on and off registers as 16 bit of data
- * To get PWM: mask each value with 0xFFF
- * To get full-on or off bit: mask with 0x1000
- * Note: ALL_LED pin will always return 0
- */
-void pca9685PWMRead(int fd, int pin, int *on, int *off)
-{
-	int reg = baseReg(pin);
-
-	if (on)
-		*on  = wiringPiI2CReadReg16(fd, reg);
-	if (off)
-		*off = wiringPiI2CReadReg16(fd, reg + 2);
-}
-
-/**
- * Enables or deactivates full-on
- * tf = true: full-on
- * tf = false: according to PWM
- */
-void pca9685FullOn(int fd, int pin, int tf)
-{
-	int reg = baseReg(pin) + 1;		// LEDX_ON_H
-	int state = wiringPiI2CReadReg8(fd, reg);
-
-	// Set bit 4 to 1 or 0 accordingly
-	state = tf ? (state | 0x10) : (state & 0xEF);
-
-	wiringPiI2CWriteReg8(fd, reg, state);
-
-	// For simplicity, we set full-off to 0 because it has priority over full-on
-	if (tf)
-		pca9685FullOff(fd, pin, 0);
-}
-
-/**
- * Enables or deactivates full-off
- * tf = true: full-off
- * tf = false: according to PWM or full-on
- */
-void pca9685FullOff(int fd, int pin, int tf)
-{
-	int reg = baseReg(pin) + 3;		// LEDX_OFF_H
-	int state = wiringPiI2CReadReg8(fd, reg);
-
-	// Set bit 4 to 1 or 0 accordingly
-	state = tf ? (state | 0x10) : (state & 0xEF);
-
-	wiringPiI2CWriteReg8(fd, reg, state);
-}
-
-/**
  * Helper function to get to register
  */
 int baseReg(int pin)
@@ -204,16 +146,11 @@ int baseReg(int pin)
 }
 
 
-
-
 //------------------------------------------------------------------------------------------------------------------
 //
 //	WiringPi functions
 //
 //------------------------------------------------------------------------------------------------------------------
-
-
-
 
 /**
  * Simple PWM control which sets on-tick to 0 and off-tick to value.
@@ -226,66 +163,5 @@ static void myPwmWrite(struct wiringPiNodeStruct *node, int pin, int value)
 	int fd   = node->fd;
 	int ipin = pin - node->pinBase;
 
-	if (value >= 4096)
-		pca9685FullOn(fd, ipin, 1);
-	else if (value > 0)
-		pca9685PWMWrite(fd, ipin, 0, value);	// (Deactivates full-on and off by itself)
-	else
-		pca9685FullOff(fd, ipin, 1);
+	pca9685PWMWrite(fd, ipin, 0, value);	// (Deactivates full-on and off by itself)
 }
-
-/**
- * Simple full-on and full-off control
- * If value is 0, full-off will be enabled
- * If value is not 0, full-on will be enabled
- */
-static void myOnOffWrite(struct wiringPiNodeStruct *node, int pin, int value)
-{
-	int fd   = node->fd;
-	int ipin = pin - node->pinBase;
-
-	if (value)
-		pca9685FullOn(fd, ipin, 1);
-	else
-		pca9685FullOff(fd, ipin, 1);
-}
-
-/**
- * Reads off registers as 16 bit of data
- * To get PWM: mask with 0xFFF
- * To get full-off bit: mask with 0x1000
- * Note: ALL_LED pin will always return 0
- */
-static int myOffRead(struct wiringPiNodeStruct *node, int pin)
-{
-	int fd   = node->fd;
-	int ipin = pin - node->pinBase;
-
-	int off;
-	pca9685PWMRead(fd, ipin, 0, &off);
-
-	return off;
-}
-
-/**
- * Reads on registers as 16 bit of data
- * To get PWM: mask with 0xFFF
- * To get full-on bit: mask with 0x1000
- * Note: ALL_LED pin will always return 0
- */
-static int myOnRead(struct wiringPiNodeStruct *node, int pin)
-{
-	int fd   = node->fd;
-	int ipin = pin - node->pinBase;
-
-	int on;
-	pca9685PWMRead(fd, ipin, &on, 0);
-
-	return on;
-}
-
-
-
-
-
-

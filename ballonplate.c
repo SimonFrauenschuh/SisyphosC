@@ -47,7 +47,7 @@ int main() {
 	pthread_create(&tid, NULL, &threadproc, NULL);
 
 	while (errorCode == 0) {
-		mode = readDatabase("mode");
+		mode = 0;//readDatabase("mode");
 		xEst = readDatabase("xest");
 		yEst = readDatabase("yest");
 
@@ -60,17 +60,4 @@ int main() {
 	killDBconnection();
 	printf("\n\nError Code: %d\n", errorCode);
 	return 0;
-}
-
-// TODO #############################################################################################################
-void getServoPosition(double* servoPositionX, double* servoPositionY) {
-	// Gets the raw PWM Data from the Servo and decrypts the original angle
-	*servoPositionY = readServoPosition(0);
-	*servoPositionX = readServoPosition(1);
-	*servoPositionX -= CHANNEL1_MID * 2;
-	*servoPositionX *= 180;
-	*servoPositionX -= 90;
-	*servoPositionY -= CHANNEL0_MID * 2;
-	*servoPositionY *= 180;
-	*servoPositionY -= 89;
 }
