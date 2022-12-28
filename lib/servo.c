@@ -37,22 +37,6 @@ void firstSetupServo() {
 	}
 }
 
-// Reads current position of the Servo
-int readServoPosition(int channel) {
-	int oldSet;
-	// Add some extra value to increase wait duration for smaller movements (e.g. 40-->42)
-	if (channel == 0) {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL0_MID;
-	} else if (channel == 1) {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL1_MID;
-	} else if (channel == 2) {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL2_MID;
-	} else {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL3_MID;
-	}
-	return oldSet;
-}
-
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
 int calculateServoPWMSignal(int channel, double degree) {
 	degree *= 2.4;
