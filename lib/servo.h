@@ -16,9 +16,6 @@ extern int errorCode;
 // First initial setup (connection) for the Servos
 void firstSetupServo();
 
-// Reads current position of the Servo
-int readServoPosition(int channel);
-
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
 int calculateServoPWMSignal(int channel, double degree);
 
