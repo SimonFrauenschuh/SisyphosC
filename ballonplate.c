@@ -7,7 +7,7 @@
  */
 
 // Username: SimonFrauenschuh
-// Password Token: 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
+// Password Token: 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
 
 #include "lib/servo.h"
 #include "lib/logic.h"
