@@ -31,12 +31,15 @@ void killDBconnection() {
 }
 
 // To read the value with the highest index from a row
-int readDatabase(char *rowName) {
+int readDatabase(char *tableName, char *rowName) {
 
     char select[70] = "SELECT ";
-    char from[] = " FROM postouchpanel ORDER BY id DESC LIMIT 1";
+    char from[] = " FROM ";
+    char order[] = " ORDER BY id DESC LIMIT 1";
     strcat(select, rowName);
     strcat(select, from);
+    strcat(select, tableName);
+    strcat(select, order);
 
     PGresult *res = PQexec(conn, select);    
     
@@ -53,7 +56,7 @@ int readDatabase(char *rowName) {
     return result;
 }
 
-// To register a value to the last row of the table
+// To register a value to the last row of the table postouchpanel
 int writeDatabaseXY(int xReal, int yReal) {
     PGresult *res = PQexec(conn, "BEGIN");    
     

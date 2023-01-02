@@ -16,7 +16,7 @@ void createDBconnection();
 void killDBconnection();
 
 // To read the value with the highest index from a row
-int readDatabase(char *rowName);
+int readDatabase(char *tableName, char *rowName);
 
-// To register a value to the last row of the table
+// To register a value to the last row of the table postouchpanel
 int writeDatabaseXY(int xReal, int yReal);

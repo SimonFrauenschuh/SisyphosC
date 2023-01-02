@@ -40,9 +40,9 @@ int main() {
 	printf("====================\nInitialization finished\n====================\n\n");
 
 	while (errorCode == 0) {
-		mode = readDatabase("mode");
-		xEst = readDatabase("xest");
-		yEst = readDatabase("yest");
+		mode = readDatabase("result", "mode");
+		xEst = readDatabase("postouchpanel", "xest");
+		yEst = readDatabase("postouchpanel", "yest");
 
 		if (mode == 1) {
 			moveToAngle(xEst, yEst);

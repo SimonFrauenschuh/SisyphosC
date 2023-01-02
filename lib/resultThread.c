@@ -4,7 +4,7 @@ PGconn *connThread;
 
 // Check if we're still in gamemode (only use inside of the thread!)
 int checkMode() {
-    char select[70] = "SELECT mode FROM postouchpanel ORDER BY id DESC LIMIT 1";
+    char select[70] = "SELECT mode FROM result ORDER BY id DESC LIMIT 1";
 
     PGresult *res = PQexec(connThread, select);    
     
@@ -34,55 +34,58 @@ void *threadproc(void *arg) {
 	}
 
 	int result = 100;
-	while(checkMode() == 1) {
-		sleep(1);
-		int xReal, yReal;
-		getTouchpanelPositionADC(&xReal, &yReal);
+	while(1) {
+		if (checkMode() == 1) {
+			//
+			sleep(1);
+			int xReal, yReal;
+			getTouchpanelPositionADC(&xReal, &yReal);
 
-		double xRealD = xReal;
-		double yRealD = yReal;
-		if ((xRealD / 179) > 1) {
-			xRealD = 179 - (xRealD - 179);
-		}
-		if ((yRealD / 106) > 1) {
-			yRealD = 106 - (yRealD - 106);
-		}
-		// Max. 3% verlieren pro Sekunde
-		result = result - 0.03 * result + 10 * (xRealD / 179) * (yRealD / 106);
-		if (result > 100) {
-			result = 100;
-		} else if (result < 0) {
-			result = 0;
-		}
+			double xRealD = xReal;
+			double yRealD = yReal;
+			if ((xRealD / 179) > 1) {
+				xRealD = 179 - (xRealD - 179);
+			}
+			if ((yRealD / 106) > 1) {
+				yRealD = 106 - (yRealD - 106);
+			}
+			// Max. 3% verlieren pro Sekunde
+			result = result - 0.03 * result + 10 * (xRealD / 179) * (yRealD / 106);
+			if (result > 100) {
+				result = 100;
+			} else if (result < 0) {
+				result = 0;
+			}
 
-		PGresult *res = PQexec(connThread, "BEGIN");    
-    
-		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-			printf("BEGIN command failed\n");        
-			PQclear(res);
-			PQfinish(connThread);
-		}
-
-		// Modify the real x-value of the highest id
-		char updateX[85] = "UPDATE result SET result=";
-		char valueString[4];
-		snprintf(valueString, 4, "%i", result);
-		strcat(updateX, valueString);
-		strcat(updateX, " WHERE id=(select max(id) from result)");
-		res = PQexec(connThread, updateX);
+			PGresult *res = PQexec(connThread, "BEGIN");    
 		
-		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-			printf("UPDATE command failed\n");        
-			PQclear(res);
-			PQfinish(connThread);
-		} 
+			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+				printf("BEGIN command failed\n");        
+				PQclear(res);
+				PQfinish(connThread);
+			}
+
+			// Modify the real x-value of the highest id
+			char updateX[85] = "UPDATE result SET result=";
+			char valueString[4];
+			snprintf(valueString, 4, "%i", result);
+			strcat(updateX, valueString);
+			strcat(updateX, " WHERE id=(select max(id) from result)");
+			res = PQexec(connThread, updateX);
 			
-		res = PQexec(connThread, "COMMIT"); 
-			
-		if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-			printf("COMMIT command failed\n");        
-			PQclear(res);
-			PQfinish(connThread);
+			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+				printf("UPDATE command failed\n");        
+				PQclear(res);
+				PQfinish(connThread);
+			} 
+				
+			res = PQexec(connThread, "COMMIT"); 
+				
+			if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+				printf("COMMIT command failed\n");        
+				PQclear(res);
+				PQfinish(connThread);
+			}
 		}
 	}
 }
