@@ -44,11 +44,11 @@ int main() {
 		xEst = readDatabase("postouchpanel", "xest");
 		yEst = readDatabase("postouchpanel", "yest");
 
-		if (mode == 1) {
+		/*if (mode == 1) {
 			moveToAngle(xEst, yEst);
-		} else {
+		} else {*/
 			moveToPoint(179, 106);
-		}
+		//}
 	}
 	killDBconnection();
 	return 0;

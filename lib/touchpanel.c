@@ -115,13 +115,16 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
-    *posX = -8 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
+    // Configuration Simon
+    //*posX = -8 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
+    // Configuration Sebastian
+    *posX = -110 + (channel2 - 0.2) * 3.1 * 304 / 3.3;
 
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
     // quality touchpanels / cables / solder jonts
-    if (posX < 0) {
-        posX = 0;
+    if (*posX < 0) {
+        *posX = 0;
     }
 
     // 5) Set GPIO 23 to 3,3V; GPIO 26 to GND; GPIO 21 & 22 input;
@@ -136,13 +139,16 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     channel0 = getVoltage(0);
 
     // 7) Calculate the distance to the edges of the touchpanel
-    *posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
-
+    // Configuration Simon
+    //*posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
+    // Configuration Sebastian
+    *posY = -150 + (channel0 - 0.2) * 2.6 * 228 / 3.3;
+    
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
     // quality touchpanels / cables / solder jonts
-    if (posY < 0) {
-        posY = 0;
+    if (*posY < 0) {
+        *posY = 0;
     }
 
     // 8) Set the GPIOs back to input (safety and power-efficiency)
