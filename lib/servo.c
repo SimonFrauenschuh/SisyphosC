@@ -9,6 +9,9 @@ int errorCode = 0;
 #pragma once
 
 #define PIN_BASE 300
+#define HERTZ 60
+// Configuration Simon
+/*
 // Servo bottom left
 #define CHANNEL0_MID 520
 // Servo bottom right
@@ -17,7 +20,16 @@ int errorCode = 0;
 #define CHANNEL2_MID 362
 // Servo top right
 #define CHANNEL3_MID 395
-#define HERTZ 60
+*/
+// Configuration Sebastian
+// Servo bottom left
+#define CHANNEL0_MID 500
+// Servo bottom right
+#define CHANNEL1_MID 440
+// Servo top left
+#define CHANNEL2_MID 345
+// Servo top right
+#define CHANNEL3_MID 425
 
 // First initial setup (connection) for the Servos
 void firstSetupServo() {
@@ -26,7 +38,8 @@ void firstSetupServo() {
 	wiringPiSetup();
 
 	// Setup with pinbase 300 and i2c location 0x41
-	connectionServo = pca9685Setup(PIN_BASE, 0x41, HERTZ);
+	// 0x41 setup Simon; 0x40 setup Sebastian
+	connectionServo = pca9685Setup(PIN_BASE, 0x40, HERTZ);
 	if (connectionServo < 0) {
 		errorCode = 1;
 		fprintf(stderr, "---ERROR 1--- Connection Servo failure");
