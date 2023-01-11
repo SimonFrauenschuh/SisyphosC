@@ -120,7 +120,7 @@ void *threadproc(void *arg) {
 				diffTenthOfSeconds += 10;
 			}
 			// Format: SSM
-			// E.g. 123 gets stored, show in WebView like 12,3
+			// E.g. 123 gets stored, show in WebView like 12,3s (conversion in Java, not here)
 			result = diffSeconds * 10 + diffTenthOfSeconds;
 
 			registerResult(result);
