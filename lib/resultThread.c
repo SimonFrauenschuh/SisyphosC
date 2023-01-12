@@ -67,7 +67,7 @@ void *threadproc(void *arg) {
 	}
 
 	// Declaration outside of while-loop to keep previous value
-	int result = 100;
+	float result = 100;
 	// Declaration outside of while-loop to improve performance
 	int xReal, yReal;
 	while(1) {
@@ -84,14 +84,14 @@ void *threadproc(void *arg) {
 				yRealD = 106 - (yRealD - 106);
 			}
 			// To calculate the new value, loose a bit and be able to gain a bit
-			result = result - 0.006 * result + 2 * (xRealD / 179) * (yRealD / 106);
+			result = result - 0.009 * result + 1.6 * (xRealD / 179) * (yRealD / 106);
 			if (result > 100) {
 				result = 100;
 			} else if (result < 0) {
 				result = 0;
 			}
 
-			registerResult(result);
+			registerResult((int)result);
 
 			// Register a new value every 200ms
 			sleep(0.2);
@@ -123,7 +123,7 @@ void *threadproc(void *arg) {
 			// E.g. 123 gets stored, show in WebView like 12,3s (conversion in Java, not here)
 			result = diffSeconds * 10 + diffTenthOfSeconds;
 
-			registerResult(result);
+			registerResult((int)result);
 
 			// To ensure that the value can be viewed at the web-view
 			sleep(5);
