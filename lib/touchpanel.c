@@ -116,9 +116,9 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     // 4) Calculate the distance to the edges of the touchpanel
     // length 304mm , width 228mm
     // Configuration Simon
-    //*posX = -8 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
+    *posX = -8 + (channel2 - 0.2) * 2.3 * 304 / 3.3;
     // Configuration Sebastian
-    *posX = -110 + (channel2 - 0.2) * 3.1 * 304 / 3.3;
+    //*posX = -110 + (channel2 - 0.2) * 3.1 * 304 / 3.3;
 
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
@@ -140,9 +140,9 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
 
     // 7) Calculate the distance to the edges of the touchpanel
     // Configuration Simon
-    //*posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
+    *posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
     // Configuration Sebastian
-    *posY = -150 + (channel0 - 0.2) * 2.6 * 228 / 3.3;
+    //*posY = -150 + (channel0 - 0.2) * 2.6 * 228 / 3.3;
     
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
