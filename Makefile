@@ -14,24 +14,24 @@
 # Including all the needed librarys
 LDLIBS	= -lwiringPi -lwiringPiDev -lpthread -lm -lwiringPiPca9685
 CPPFLAGS = -I/usr/include/postgresql
-LDSERVO = -L/home/pi/Desktop/BallOnPlateC/lib/servo.h
-LDTOUCH = -L/home/pi/Desktop/BallOnPlateC/lib/touchpanel.h
-LDLOGIC = -L/home/pi/Desktop/BallOnPlateC/lib/logic.h
-LDTHREAD = -L/home/pi/Desktop/BallOnPlateC/lib/resultThread.h
-LDADC = -L/home/pi/Desktop/BallOnPlateC/lib/ADS1115.h
+LDSERVO = -L/home/pi/Desktop/SisyphosC/lib/servo.h
+LDTOUCH = -L/home/pi/Desktop/SisyphosC/lib/touchpanel.h
+LDLOGIC = -L/home/pi/Desktop/SisyphosC/lib/logic.h
+LDTHREAD = -L/home/pi/Desktop/SisyphosC/lib/resultThread.h
+LDADC = -L/home/pi/Desktop/SisyphosC/lib/ADS1115.h
 
 CXXFLAGS = -std=c99
 
 # Two-Step-Compiling
-ballonplate:	ballonplate.o
+sisyphos:	sisyphos.o
 	@gcc $(LDLIBS) $(LDSERVO) $(LDTOUCH) $(LDLOGIC) $(LDADC) $(CXXFLAGS) $(LDTHREAD) -lpq $< -o $@
 	
-ballonplate.o: ballonplate.c
-	@gcc -c ballonplate.c $(CPPFLAGS) 
+sisyphos.o: sisyphos.c
+	@gcc -c sisyphos.c $(CPPFLAGS) 
 
 # Delete the ".o" files
 .PHONY: clean
 
 clean:
-	@rm -f *.o ballonplate.o
+	@rm -f *.o sisyphos.o
 	@echo [Compiled and successful]
