@@ -99,8 +99,7 @@ void *threadproc(void *arg) {
 			int xStart, yStart;
 			struct timeval begin, end;
 			getTouchpanelPositionADC(&xStart, &yStart);
-			printf("xStart: %i,     yStart: %i\n\n\n", xStart, yStart);
-
+			
 			// Start measuring time
     		gettimeofday(&begin, 0);
 
@@ -110,8 +109,7 @@ void *threadproc(void *arg) {
 			// As long, as the right-now value isn't kind of the same as the beginning: wait until it is
 			do {
 				getTouchpanelPositionADC(&xReal, &yReal);
-				printf("xJetzt: %i,     yJetzt: %i\n", xReal, yReal);
-			} while((xReal < xStart - 10) || (xReal > xStart + 10) || (yReal < yStart - 10) || (yReal > yStart + 10));
+				} while((xReal < xStart - 10) || (xReal > xStart + 10) || (yReal < yStart - 10) || (yReal > yStart + 10));
 
 			// Stop measuring time and calculate the elapsed time in seconds
 			gettimeofday(&end, 0);
@@ -124,7 +122,6 @@ void *threadproc(void *arg) {
 			// Format: SSM
 			// E.g. 123 gets stored, show in WebView like 12,3s (conversion in Java, not here)
 			result = diffSeconds * 10 + diffTenthOfSeconds;
-			printf("%i\n", result);
 
 			registerResult(result);
 
