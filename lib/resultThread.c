@@ -59,7 +59,7 @@ void registerResult(int result) {
 // To change the pins according to the result to be read by the arduino
 void setIO(int result) {
 	// Calculate result, so it can be 0...7
-    result /= 12.5;
+	(result == 100) ? (result = result / 12.5 - 1) : (result /= 12.5);
 	// Binary check, if we need to set the output
 	// e.g. 6 --> 110 --> 110 & 0b100 = 1 --> HIGH
 	digitalWrite(0, result & 0b100);
