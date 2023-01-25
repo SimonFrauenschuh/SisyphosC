@@ -1,5 +1,6 @@
 #include <libpq-fe.h>
 #include <time.h>
+#include <wiringPi.h>
 
 PGconn *connThread;
 
@@ -22,6 +23,7 @@ int checkMode() {
     return result;
 }
 
+// To register the result in the db
 void registerResult(int result) {
 	PGresult *res = PQexec(connThread, "BEGIN");    
 		
@@ -54,6 +56,17 @@ void registerResult(int result) {
 	}
 }
 
+// To change the pins according to the result to be read by the arduino
+void setIO(int result) {
+	// Calculate result, so it can be 0...7
+    result /= 12.5;
+	// Binary check, if we need to set the output
+	// e.g. 6 --> 110 --> 110 & 0b100 = 1 --> HIGH
+	digitalWrite(0, result & 0b100);
+	digitalWrite(2, result & 0b010); 
+	digitalWrite(3, result & 0b001);
+}
+
 // Thread to update the result in the db
 void *threadproc(void *arg) {
 	connThread = PQconnectdb("user=pi password=BallOnPlateDSOwner dbname=ballonplateds");
@@ -70,6 +83,10 @@ void *threadproc(void *arg) {
 	float result = 100;
 	// Declaration outside of while-loop to improve performance
 	int xReal, yReal;
+	// Set once outside of while-loop to improve performance
+	pinMode(0, OUTPUT);
+    pinMode(2, OUTPUT);
+	pinMode(2, OUTPUT);
 	while(1) {
 		// Mode 1: gamemode, try to center the ball
 		if (checkMode() == 1) {
@@ -91,6 +108,7 @@ void *threadproc(void *arg) {
 				result = 0;
 			}
 
+			setIO((int)result);
 			registerResult((int)result);
 
 			// Register a new value every 200ms

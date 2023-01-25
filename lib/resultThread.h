@@ -18,3 +18,10 @@ void *threadproc(void *arg);
 
 // Check if we're still in gamemode (only use inside of the thread!)
 int checkMode();
+
+// To register the result in the db
+void registerResult(int result);
+
+// To change the pins according to the result to be read by the arduino
+// MSB: GPIO0           LSB: GPIO3
+void setIO(int result);
