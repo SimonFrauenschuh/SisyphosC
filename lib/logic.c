@@ -17,12 +17,15 @@
 
 	int touchpanelPositionX, touchpanelPositionY;
 	int touchpanelPositionXOld, touchpanelPositionYOld;
+	int dX, dY;
+	int dXOld, dYOld;
+
 
 // Logic for mode single-point (define a point, where the ball should move to)
 void moveToPoint(int xEst, int yEst) {
 	int xDiff, yDiff;
 	// Values for the PD-Regulator
-	int dX = 0, dY = 0, pX = 0, pY = 0;
+	int pX = 0, pY = 0;
 
 	// Used for the "D" Part of the PD-Controller
 	struct timeval begin, end;
@@ -33,6 +36,8 @@ void moveToPoint(int xEst, int yEst) {
 
 	touchpanelPositionXOld = touchpanelPositionX;
 	touchpanelPositionYOld = touchpanelPositionY;
+	dXOld = dX;
+	dYOld = dY;
 
 	getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
 	//getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
@@ -53,23 +58,23 @@ void moveToPoint(int xEst, int yEst) {
 
 			xDiff = touchpanelPositionX - xEst;
 			// Add a offset and calculate the p-Part
-			pX = (xDiff > 0) ? (4 + xDiff / 15) : (-4 + xDiff / 15);
+			pX = 0;//(xDiff > 0) ? (4 + xDiff / 15) : (-4 + xDiff / 15);
 
 
 			yDiff = touchpanelPositionY - yEst;
-			pY = (yDiff > 0) ? (5 + yDiff / 10) : (-5 + yDiff / 10);
+			pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
 			
 			// Calculate the "D" Part of the PD-Controller
-			/*if (xDiff > 50 && xDiff < 50) {
-				dX = -15 * (touchpanelPositionXOld - touchpanelPositionX) / milliseconds;
-			}*/
 			xDiff = touchpanelPositionXOld - touchpanelPositionX;
-			//dX = (xDiff < 0) ? (2 + 16 * xDiff / milliseconds) : (-2 - 16 * xDiff / milliseconds); 
-			dX = (xDiff < 0) ? (-2 -16 * xDiff / milliseconds) : (2 + 16 * xDiff / milliseconds); 
+			dX = 0;//(xDiff < 0) ? (2 - 16 * xDiff / milliseconds) : (-2 - 16 * xDiff / milliseconds); 
 
 			yDiff = touchpanelPositionYOld - touchpanelPositionY;
-			dY = (yDiff < 0) ? (2 - 15 * yDiff / milliseconds) : (-2 - 15 * yDiff / milliseconds);
-							
+			dY = (yDiff < 0) ? (4 - 10 * yDiff / milliseconds) : (-4 - 10 * yDiff / milliseconds);
+			
+			// Find mean value for not so strong rash
+			//dX = (dX + dXOld * 2)/3;
+			//dY = (dY + dYOld)/3;
+
 			if (pX + dX > 25) {
 				pX = 15;
 				dX = 10;
