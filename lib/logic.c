@@ -37,13 +37,13 @@ void moveToPoint(int xEst, int yEst) {
 	getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
 	//getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
 	//writeDatabaseXY(touchpanelPositionX, touchpanelPositionY);
-	
+
 	// Control, if there isn't a misread value from the touchpad
 	// Sometimes, the touchpanel has a state, where "0" is sent for the x-Coordinate, no matter, what the real value is
-	if (touchpanelPositionX != 0) {
+	if (touchpanelPositionX != 0 && touchpanelPositionY != 0) {
 		// Single values, that don't match, get ignored
-		if (!((touchpanelPositionX < touchpanelPositionXOld * 0.7) || (touchpanelPositionX > touchpanelPositionXOld * 1.3) || (touchpanelPositionY < touchpanelPositionYOld * 0.7) || (touchpanelPositionY > touchpanelPositionYOld * 1.3))) {
-			printf("xPosition: %d    |    yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
+		if (!((touchpanelPositionX < touchpanelPositionXOld * 0.9) || (touchpanelPositionX > touchpanelPositionXOld * 1.1) || (touchpanelPositionY < touchpanelPositionYOld * 0.9) || (touchpanelPositionY > touchpanelPositionYOld * 1.1))) {
+			printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 			
 			// Stop measuring time and calculate the elapsed time
 			gettimeofday(&end, 0);
@@ -53,20 +53,22 @@ void moveToPoint(int xEst, int yEst) {
 
 			xDiff = touchpanelPositionX - xEst;
 			// Add a offset and calculate the p-Part
-			pX = (xDiff > 0) ? (pX = 8 + xDiff / 15) : (pX = -8 + xDiff / 15);
-			
+			pX = (xDiff > 0) ? (4 + xDiff / 15) : (-4 + xDiff / 15);
+
+
 			yDiff = touchpanelPositionY - yEst;
-			pY = (yDiff > 0) ? (pY = 8 + yDiff / 14) : (pY = -8 + yDiff / 14);
+			pY = (yDiff > 0) ? (5 + yDiff / 10) : (-5 + yDiff / 10);
 			
 			// Calculate the "D" Part of the PD-Controller
 			/*if (xDiff > 50 && xDiff < 50) {
 				dX = -15 * (touchpanelPositionXOld - touchpanelPositionX) / milliseconds;
 			}*/
 			xDiff = touchpanelPositionXOld - touchpanelPositionX;
-			dX = (xDiff < 0) ? (2 - 4 * xDiff / milliseconds) : (-2 - 4 * xDiff / milliseconds); 
+			//dX = (xDiff < 0) ? (2 + 16 * xDiff / milliseconds) : (-2 - 16 * xDiff / milliseconds); 
+			dX = (xDiff < 0) ? (-2 -16 * xDiff / milliseconds) : (2 + 16 * xDiff / milliseconds); 
 
 			yDiff = touchpanelPositionYOld - touchpanelPositionY;
-			dY = (yDiff < 0) ? (2 - 3 * yDiff / milliseconds) : (-2 - 3 * yDiff / milliseconds);
+			dY = (yDiff < 0) ? (2 - 15 * yDiff / milliseconds) : (-2 - 15 * yDiff / milliseconds);
 							
 			if (pX + dX > 25) {
 				pX = 15;
@@ -88,7 +90,8 @@ void moveToPoint(int xEst, int yEst) {
 			pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (pX + dX));
 			pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (pX + dX));
 
-			printf("%d, %d\n\n", pX, dX);
+			printf("X: %d, %d\n", pX, dX);
+			printf("Y: %d, %d\n\n", pY, dY);
 		}
 	}
 }
