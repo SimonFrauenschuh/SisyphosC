@@ -1,5 +1,7 @@
 #include <libpq-fe.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <wiringPi.h>
 
 PGconn *connThread;
@@ -24,7 +26,7 @@ int checkMode() {
 }
 
 // To register the result in the db
-void registerResult(int result) {
+void changeDB(char *rowName, int result) {
 	PGresult *res = PQexec(connThread, "BEGIN");    
 		
 	if (PQresultStatus(res) != PGRES_COMMAND_OK) {
@@ -34,7 +36,9 @@ void registerResult(int result) {
 	}
 
 	// Modify the real x-value of the highest id
-	char updateX[85] = "UPDATE result SET result=";
+	char updateX[85] = "UPDATE result SET ";
+	strcat(updateX, rowName);
+	strcat(updateX, " =");
 	char valueString[4];
 	snprintf(valueString, 4, "%i", result);
 	strcat(updateX, valueString);
@@ -109,25 +113,39 @@ void *threadproc(void *arg) {
 			}
 
 			setIO((int)result);
-			registerResult((int)result);
+			changeDB("result", (int)result);
 
 			// Register a new value every 200ms
 			sleep(0.2);
+		// Mode 2: Race
 		} else if (checkMode() == 2) {
 			int xStart, yStart;
 			struct timeval begin, end;
 			getTouchpanelPositionADC(&xStart, &yStart);
 			
+			// Countdown 2
+			changeDB("result", -3);
+			setIO(0);
+			sleep(1);
+			// Countdown 1
+			changeDB("result", -2);
+			setIO(12.5 * 3);
+			sleep(1);
+			// Start
+			// Register a specific value to tell the Frontend the measurement is pending
+			changeDB("result", 0);
+			setIO(100);
+
 			// Start measuring time
     		gettimeofday(&begin, 0);
-
+			
 			// Wait for 3 Seconds because nobody is gonna to be faster than that and to allow the ball to move away
 			sleep(3);
 
 			// As long, as the right-now value isn't kind of the same as the beginning: wait until it is
 			do {
 				getTouchpanelPositionADC(&xReal, &yReal);
-				} while((xReal < xStart - 10) || (xReal > xStart + 10) || (yReal < yStart - 10) || (yReal > yStart + 10));
+			} while((xReal < xStart - 10) || (xReal > xStart + 10) || (yReal < yStart - 10) || (yReal > yStart + 10));
 
 			// Stop measuring time and calculate the elapsed time in seconds
 			gettimeofday(&end, 0);
@@ -141,10 +159,9 @@ void *threadproc(void *arg) {
 			// E.g. 123 gets stored, show in WebView like 12,3s (conversion in Java, not here)
 			result = diffSeconds * 10 + diffTenthOfSeconds;
 
-			registerResult((int)result);
-
-			// To ensure that the value can be viewed at the web-view
-			sleep(5);
+			changeDB("result", (int)result);
+			// Put in idle mode
+			changeDB("mode", 3);
 		}
 	}
 }

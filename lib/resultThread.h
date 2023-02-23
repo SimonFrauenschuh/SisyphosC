@@ -20,7 +20,7 @@ void *threadproc(void *arg);
 int checkMode();
 
 // To register the result in the db
-void registerResult(int result);
+void changeDB(char *rowName, int result);
 
 // To change the pins according to the result to be read by the arduino
 // MSB: GPIO0           LSB: GPIO3
