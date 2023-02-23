@@ -123,12 +123,15 @@ void *threadproc(void *arg) {
 			struct timeval begin, end;
 			getTouchpanelPositionADC(&xStart, &yStart);
 			
+			// Put in starting-sequence mode
+			changeDB("mode", 2);
+
 			// Countdown 2
-			changeDB("result", -3);
+			changeDB("result", 2);
 			setIO(0);
 			sleep(1);
 			// Countdown 1
-			changeDB("result", -2);
+			changeDB("result", 1);
 			setIO(12.5 * 3);
 			sleep(1);
 			// Start
@@ -139,13 +142,13 @@ void *threadproc(void *arg) {
 			// Start measuring time
     		gettimeofday(&begin, 0);
 			
-			// Wait for 3 Seconds because nobody is gonna to be faster than that and to allow the ball to move away
-			sleep(3);
+			// Wait for 4 Seconds because nobody is gonna to be faster than that and to allow the ball to move away
+			sleep(4);
 
 			// As long, as the right-now value isn't kind of the same as the beginning: wait until it is
 			do {
 				getTouchpanelPositionADC(&xReal, &yReal);
-			} while((xReal < xStart - 10) || (xReal > xStart + 10) || (yReal < yStart - 10) || (yReal > yStart + 10));
+			} while((xReal < xStart - 5) || (xReal > xStart + 5) || (yReal < yStart - 5) || (yReal > yStart + 5));
 
 			// Stop measuring time and calculate the elapsed time in seconds
 			gettimeofday(&end, 0);
@@ -155,12 +158,12 @@ void *threadproc(void *arg) {
 				diffSeconds--;
 				diffTenthOfSeconds += 10;
 			}
-			// Format: SSM
+			// Format: SecondSecondMillisecond
 			// E.g. 123 gets stored, show in WebView like 12,3s (conversion in Java, not here)
 			result = diffSeconds * 10 + diffTenthOfSeconds;
 
 			changeDB("result", (int)result);
-			// Put in idle mode
+			// Put in race-mode (view result)
 			changeDB("mode", 3);
 		}
 	}

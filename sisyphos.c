@@ -44,7 +44,7 @@ int main() {
 		xEst = readDatabase("postouchpanel", "xest");
 		yEst = readDatabase("postouchpanel", "yest");
 
-		if ((mode == 1) || (mode == 2)) {
+		if ((mode == 1) || (mode == 2) || (mode == 3)) {
 			moveToAngle(xEst, yEst);
 		} else {
 			moveToPoint(150, 110);
