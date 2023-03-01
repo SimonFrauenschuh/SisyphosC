@@ -58,7 +58,36 @@ void moveToPoint(int xEst, int yEst) {
 	if (touchpanelPositionX != 0 && touchpanelPositionY != 0 && milliseconds > 1) {
 		// Single values, that don't match, get ignored
 		if (!(((touchpanelPositionX < touchpanelPositionXOld - 12) || (touchpanelPositionX > touchpanelPositionXOld + 12) || (touchpanelPositionY < touchpanelPositionYOld - 12) || (touchpanelPositionY > touchpanelPositionYOld + 12)))) {
-			printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
+			calculatePWMSignal(touchpanelPositionX, touchpanelPositionY, touchpanelPositionXOld, touchpanelPositionYOld, xEst, yEst);
+		} // If the previous-previous value matches with the new one
+		else if (!(((touchpanelPositionX < touchpanelPositionXOldOld - 12) || (touchpanelPositionX > touchpanelPositionXOldOld + 12) || (touchpanelPositionY < touchpanelPositionYOldOld - 12) || (touchpanelPositionY > touchpanelPositionYOldOld + 12))))) {
+			calculatePWMSignal(touchpanelPositionX, touchpanelPositionY, touchpanelPositionXOldOld, touchpanelPositionYOldOld, xEst, yEst);
+		}
+	}
+}
+
+// Synchronize with the angle, given by the database (the phones gyroscope)
+void moveToAngle(int xEst, int yEst) {
+	xEst /= 2;
+	yEst /= 2;
+	if (xEst > 20) {
+		xEst = 20;
+	} else if (xEst < -20) {
+		xEst = -20;
+	}
+	if (yEst > 20) {
+		yEst = 20;
+	} else if (yEst < -20) {
+		yEst = -20;
+	}
+	setServoDegree(0, xEst);
+	setServoDegree(1, xEst);
+	setServoDegree(2, -yEst);
+	setServoDegree(3, -yEst);
+}
+
+void calculatePWMSignal(int touchpanelPositionX, int touchpanelPositionY, int touchpanelPositionXOld, int touchpanelPositionYOld, int xEst, int yEst) {
+	printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
 
 			xDiff = touchpanelPositionX - xEst;
 			// Add a offset and calculate the p-Part (Position, [pixels])
@@ -109,33 +138,4 @@ void moveToPoint(int xEst, int yEst) {
 
 			printf("X: %d, %d\n", pX, dX);
 			printf("msec: %i\n",milliseconds);
-		} // If the previous-previous value matches with the new one
-		else if (!(((touchpanelPositionX < touchpanelPositionXOldOld - 12) || (touchpanelPositionX > touchpanelPositionXOldOld + 12) || (touchpanelPositionY < touchpanelPositionYOldOld - 12) || (touchpanelPositionY > touchpanelPositionYOldOld + 12))))) {
-			calculatePWMSignal(touchpanelPositionX, touchpanelPositionY, touchpanelPositionXOldOld, touchpanelPositionYOldOld, xEst, yEst);
-		}
-	}
-}
-
-// Synchronize with the angle, given by the database (the phones gyroscope)
-void moveToAngle(int xEst, int yEst) {
-	xEst /= 2;
-	yEst /= 2;
-	if (xEst > 20) {
-		xEst = 20;
-	} else if (xEst < -20) {
-		xEst = -20;
-	}
-	if (yEst > 20) {
-		yEst = 20;
-	} else if (yEst < -20) {
-		yEst = -20;
-	}
-	setServoDegree(0, xEst);
-	setServoDegree(1, xEst);
-	setServoDegree(2, -yEst);
-	setServoDegree(3, -yEst);
-}
-
-void calculatePWMSignal(int posX, int posY, int posXOld, int posYOld, int xEst, int yEst) {
-
 }
