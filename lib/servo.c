@@ -16,9 +16,9 @@ int errorCode = 0;
 // Servo bottom right
 #define CHANNEL1_MID 468
 // Servo top left
-#define CHANNEL2_MID 365
+#define CHANNEL2_MID 368
 // Servo top right
-#define CHANNEL3_MID 398
+#define CHANNEL3_MID 395
 
 // Configuration Sebastian
 // Servo bottom left
