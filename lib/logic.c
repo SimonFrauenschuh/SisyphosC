@@ -14,44 +14,39 @@
 
 #pragma once
 
-int touchpanelPositionX[4] = {0}, touchpanelPositionYArray[4] = {0};
-int touchpanelPositionY;
-int touchpanelPositionXOld, touchpanelPositionYOld;
-int touchpanelPositionXOldOld, touchpanelPositionYOldOld;
-int dX, dY;
+int touchpanelPositionX[4] = {0}, touchpanelPositionY[4] = {0};
 
 
 inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 	int xDiff, yDiff;
 	int pX = 0, pY = 0;
+	int dX = 0, dY = 0;
 	
-	printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX[0], touchpanelPositionY);
+	printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX[0], touchpanelPositionY[0]);
 
 	xDiff = touchpanelPositionX[0] - xEst;
 	// Add a offset and calculate the p-Part (Position, [pixels])
-	pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
+	//pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
 
 
-	yDiff = touchpanelPositionY - yEst;
-	pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
+	yDiff = touchpanelPositionY[0] - yEst;
+	//pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
 	
 
 	// Calculate the "D" Part of the PD-Controller (Speed, [pixels/ms])
-	dX = 0;
-	if ((touchpanelPositionX[0] < xEst + 50) && (touchpanelPositionX[0] > xEst -50)) {
+	/*if ((touchpanelPositionX[0] < xEst + 50) && (touchpanelPositionX[0] > xEst -50)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i++) {
 			xDiff = touchpanelPositionX[i + 1] - touchpanelPositionX[i];
 			dX += ((6 - 2 * i) * xDiff) / milliseconds;
 		}
-	}
+	}*/
 
-	/*dY = 0;
-	if ((touchpanelPositionY < yEst + 50) && (touchpanelPositionY > yEst -50)) {
-		for (int i = 0; i < (sizeof(touchpanelPositionYArray) / sizeof(int)) - 1; i++) {
-			yDiff = touchpanelPositionYArray[i + 1] - touchpanelPositionYArray[i];
+	if ((touchpanelPositionY[0] < yEst + 40) && (touchpanelPositionY[0] > yEst - 40)) {
+		for (int i = 0; i < (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i++) {
+			yDiff = touchpanelPositionY[i + 1] - touchpanelPositionY[i];
 			dY += ((6 - 2 * i) * yDiff) / milliseconds;
 		}
-	}*/
+	}
 
 
 	if (pX + dX > 25) {
@@ -74,7 +69,7 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 	pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (pX + dX));
 	pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (pX + dX));
 
-	printf("X: %d, %d\n", pX, dX);
+	printf("Y: %d, %d\n", pY, dY);
 }
 
 // Logic for mode single-point (define a point, where the ball should move to)
@@ -86,17 +81,15 @@ inline void moveToPoint(int xEst, int yEst) {
 	// Start measuring time
     gettimeofday(&begin, 0);
 
-	touchpanelPositionXOldOld = touchpanelPositionXOld;
-	touchpanelPositionYOldOld = touchpanelPositionYOld;
-	touchpanelPositionXOld = touchpanelPositionX;
-	touchpanelPositionYOld = touchpanelPositionY;
-
 	// Delete the last value and shift the others
 	for (int i = (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i > 0 ; i--) {
 		touchpanelPositionX[i] = touchpanelPositionX[i - 1];
 	}
+	for (int i = (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i > 0 ; i--) {
+		touchpanelPositionY[i] = touchpanelPositionY[i - 1];
+	}
 	
-	getTouchpanelPositionADC(&touchpanelPositionX[0], &touchpanelPositionY);
+	getTouchpanelPositionADC(&touchpanelPositionX[0], &touchpanelPositionY[0]);
 
 	// Stop measuring time and calculate the elapsed time
 	gettimeofday(&end, 0);
@@ -107,22 +100,22 @@ inline void moveToPoint(int xEst, int yEst) {
 	// Control, if there isn't a misread value from the touchpad
 	// Sometimes, the touchpanel has a state, where "0" is sent for the x-Coordinate, no matter, what the real value is
 	// Also ignore when it took too long (--> negative values that'd destroy the controllers algorithm)
-	if (touchpanelPositionX[0] != 0 && touchpanelPositionX[0] != 505 && touchpanelPositionY != 0 && milliseconds > 1) {
+	if (touchpanelPositionX[0] != 0 && touchpanelPositionX[0] != 505 && touchpanelPositionY[0] != 0 && milliseconds > 1) {
 		
 		// Register the new value in the db
-		writeDatabaseXY(touchpanelPositionX[0], touchpanelPositionY);
+		writeDatabaseXY(touchpanelPositionX[0], touchpanelPositionY[0]);
 		
 		int dev = 3;
 		// Single values, that don't match, get ignored
-		if ((!(((touchpanelPositionX[0] < touchpanelPositionX[1] - 20) || (touchpanelPositionX[0] > touchpanelPositionX[1] + 20) || (touchpanelPositionY < touchpanelPositionYOld - 20) || (touchpanelPositionY > touchpanelPositionYOld + 20))))
+		if ((!(((touchpanelPositionX[0] < touchpanelPositionX[1] - 20) || (touchpanelPositionX[0] > touchpanelPositionX[1] + 20) || (touchpanelPositionY[0] < touchpanelPositionY[1] - 20) || (touchpanelPositionY[0] > touchpanelPositionY[1] + 20))))
 		// And if the trend is staying the same
-		&& (((touchpanelPositionX[2] < touchpanelPositionX[1] + dev) && (touchpanelPositionXOld < touchpanelPositionX + dev))
-		|| ((touchpanelPositionX[2] > touchpanelPositionX[Old] - dev) && (touchpanelPositionX[1] > touchpanelPositionX[0] - dev)))
-		&& (((touchpanelPositionYOldOld < touchpanelPositionYOld + dev) && (touchpanelPositionYOld < touchpanelPositionY + dev))
-		|| ((touchpanelPositionYOldOld > touchpanelPositionYOld - dev) && (touchpanelPositionYOld > touchpanelPositionY - dev)))) {
+		&& (((touchpanelPositionX[2] < touchpanelPositionX[1] + dev) && (touchpanelPositionX[1] < touchpanelPositionX[0] + dev))
+		|| ((touchpanelPositionX[2] > touchpanelPositionX[1] - dev) && (touchpanelPositionX[1] > touchpanelPositionX[0] - dev)))
+		&& (((touchpanelPositionY[2] < touchpanelPositionY[1] + dev) && (touchpanelPositionY[1] < touchpanelPositionY[0] + dev))
+		|| ((touchpanelPositionY[2] > touchpanelPositionY[1] - dev) && (touchpanelPositionY[1] > touchpanelPositionY[0] - dev)))) {
 			calculatePWMSignal(xEst, yEst, milliseconds);
 		} // If the previous-previous value (--> milliseconds * 3 (a bit less important)) matches with the new one
-		else if (!(((touchpanelPositionX[0] < touchpanelPositionX[2] - 40) || (touchpanelPositionX[0] > touchpanelPositionX[2] + 40) || (touchpanelPositionY < touchpanelPositionYOldOld - 40) || (touchpanelPositionY > touchpanelPositionYOldOld + 40)))) {
+		else if (!(((touchpanelPositionX[0] < touchpanelPositionX[2] - 40) || (touchpanelPositionX[0] > touchpanelPositionX[2] + 40) || (touchpanelPositionY[0] < touchpanelPositionY[2] - 40) || (touchpanelPositionY[0] > touchpanelPositionY[2] + 40)))) {
 			calculatePWMSignal(xEst, yEst, milliseconds * 3);
 		}
 	}
