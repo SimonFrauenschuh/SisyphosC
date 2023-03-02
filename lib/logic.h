@@ -16,4 +16,4 @@ void moveToPoint(int xEst, int yEst);
 void moveToAngle(int xEst, int yEst);
 
 // Function to calculate the parameters for the regulator
-void calculatePWMSignal(int touchpanelPositionX, int touchpanelPositionY, int touchpanelPositionXOld, int touchpanelPositionYOld, int xEst, int yEst, int milliseconds);
+void calculatePWMSignal(int xEst, int yEst, int milliseconds);
