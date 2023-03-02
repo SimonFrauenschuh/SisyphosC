@@ -14,3 +14,6 @@ void moveToPoint(int xEst, int yEst);
 
 // Synchronize with the angle, given by the database (the phones gyroscope)
 void moveToAngle(int xEst, int yEst);
+
+// Function to calculate the parameters for the regulator
+void calculatePWMSignal(int touchpanelPositionX, int touchpanelPositionY, int touchpanelPositionXOld, int touchpanelPositionYOld, int xEst, int yEst, int milliseconds);
