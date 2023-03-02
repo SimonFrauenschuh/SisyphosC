@@ -14,7 +14,7 @@
 
 #pragma once
 
-
+int touchpanelPositionXArray[4] = {0}, touchpanelPositionYArray[4] = {0};
 int touchpanelPositionX, touchpanelPositionY;
 int touchpanelPositionXOld, touchpanelPositionYOld;
 int touchpanelPositionXOldOld, touchpanelPositionYOldOld;
@@ -29,25 +29,29 @@ inline void calculatePWMSignal(int touchpanelPositionX, int touchpanelPositionY,
 
 	xDiff = touchpanelPositionX - xEst;
 	// Add a offset and calculate the p-Part (Position, [pixels])
-	//pX = (xDiff > 10) ? (4 + xDiff / 15) : ((xDiff < -10) ? (-4 + xDiff / 15) : (0));
-	//pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
+	pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
 
 
 	yDiff = touchpanelPositionY - yEst;
-	//pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
-			
+	pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
+	
+
 	// Calculate the "D" Part of the PD-Controller (Speed, [pixels/ms])
+	dX = 0;
 	if ((touchpanelPositionX < xEst + 50) && (touchpanelPositionX > xEst -50)) {
-		xDiff = touchpanelPositionXOld - touchpanelPositionX;
-		//dX = (xDiff > 0) ? (2 + 6 * xDiff / milliseconds) : (-2 + 6 * xDiff / milliseconds); 
-		dX = (12 * xDiff) / milliseconds;
-	} else {
-		dX = 0;
+		for (int i = 0; i < (sizeof(touchpanelPositionXArray) / sizeof(int)) - 1; i++) {
+			xDiff = touchpanelPositionXArray[i + 1] - touchpanelPositionXArray[i];
+			dX += ((6 - 2 * i) * xDiff) / milliseconds;
+		}
 	}
 
-	yDiff = touchpanelPositionYOld - touchpanelPositionY;
-	//dY = (yDiff > 0) ? (4 + 10 * yDiff / milliseconds) : (-4 + 10 * yDiff / milliseconds);
-	//dY = (10 * yDiff) / milliseconds;
+	/*dY = 0;
+	if ((touchpanelPositionY < yEst + 50) && (touchpanelPositionY > yEst -50)) {
+		for (int i = 0; i < (sizeof(touchpanelPositionYArray) / sizeof(int)) - 1; i++) {
+			yDiff = touchpanelPositionYArray[i + 1] - touchpanelPositionYArray[i];
+			dY += ((6 - 2 * i) * yDiff) / milliseconds;
+		}
+	}*/
 
 
 	if (pX + dX > 25) {
@@ -88,7 +92,6 @@ inline void moveToPoint(int xEst, int yEst) {
 	touchpanelPositionYOld = touchpanelPositionY;
 
 	getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
-	writeDatabaseXY(touchpanelPositionX, touchpanelPositionY);
 
 	// Stop measuring time and calculate the elapsed time
 	gettimeofday(&end, 0);
@@ -99,7 +102,15 @@ inline void moveToPoint(int xEst, int yEst) {
 	// Control, if there isn't a misread value from the touchpad
 	// Sometimes, the touchpanel has a state, where "0" is sent for the x-Coordinate, no matter, what the real value is
 	// Also ignore when it took too long (--> negative values that'd destroy the controllers algorithm)
-	if (touchpanelPositionX != 0 && touchpanelPositionY != 0 && milliseconds > 1) {
+	if (touchpanelPositionX != 0 && touchpanelPositionX != 505 && touchpanelPositionY != 0 && milliseconds > 1) {
+		
+		// Register the new value in the array and delete the last one
+		for (int i = (sizeof(touchpanelPositionXArray) / sizeof(int)) - 1; i > 0 ; i--) {
+			touchpanelPositionXArray[i] = touchpanelPositionXArray[i - 1];
+		}
+		touchpanelPositionXArray[0] = touchpanelPositionX;
+		writeDatabaseXY(touchpanelPositionX, touchpanelPositionY);
+		
 		int dev = 3;
 		// Single values, that don't match, get ignored
 		if ((!(((touchpanelPositionX < touchpanelPositionXOld - 20) || (touchpanelPositionX > touchpanelPositionXOld + 20) || (touchpanelPositionY < touchpanelPositionYOld - 20) || (touchpanelPositionY > touchpanelPositionYOld + 20))))
