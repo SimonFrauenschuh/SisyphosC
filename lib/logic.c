@@ -18,9 +18,9 @@ int touchpanelPositionX[3] = {0}, touchpanelPositionY[3] = {0};
 
 
 inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
-	int xDiff, yDiff;
-	int pX = 0, pY = 0;
-	int dX = 0, dY = 0;
+	int8_t xDiff, yDiff;
+	double pX = 0, pY = 0;
+	double dX = 0, dY = 0;
 	
 	printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX[0], touchpanelPositionY[0]);
 
@@ -44,32 +44,34 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 	if ((touchpanelPositionY[0] < yEst + 50) && (touchpanelPositionY[0] > yEst - 50)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i++) {
 			yDiff = touchpanelPositionY[i + 1] - touchpanelPositionY[i];
-			dY -= ((4 - 1.2 * i) * yDiff) / milliseconds;
+			dY -= ((3.4 - 1.2 * ((double) i)) * yDiff) / (double) milliseconds;
 		}
 	}
 
 
-	if (pX + dX > 20) {
-		pX = 10;
-		dX = 10;
-	} else if (pX + dX < -20) {
-		pX = -10;
-		dX = -10;
+	if (pX + dX > 15.) {
+		pX = 7.5;
+		dX = 7.5;
+	} else if (pX + dX < -15.) {
+		pX = -7.5;
+		dX = -7.5;
 	}
-	if (pY + dY > 20) {
-		pY = 15;
-		dY = 10;
-	} else if (pY + dY < -20) {
-		pY = -10;
-		dY = -10;
+	if (pY + dY > 15.) {
+		pY = 7.5;
+		dY = 7.5;
+	} else if (pY + dY < -15.) {
+		pY = -7.5;
+		dY = -7.5;
 	}
 
-	pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (pY + dY));
-	pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (pY + dY));
-	pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (pX + dX));
-	pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (pX + dX));
+	printf("Y: %d, %d\n", (int)pY, (int)dY);
 
-	printf("Y: %d, %d\n", pY, dY);
+	pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (int)(pY + dY));
+	pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (int)(pY + dY));
+	pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (int)(pX + dX));
+	pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (int)(pX + dX));
+
+	
 }
 
 // Logic for mode single-point (define a point, where the ball should move to)
