@@ -14,7 +14,7 @@
 
 #pragma once
 
-int touchpanelPositionX[4] = {0}, touchpanelPositionY[4] = {0};
+int touchpanelPositionX[3] = {0}, touchpanelPositionY[3] = {0};
 
 
 inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
@@ -30,37 +30,37 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 
 
 	yDiff = touchpanelPositionY[0] - yEst;
-	//pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
+	pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
 	
 
 	// Calculate the "D" Part of the PD-Controller (Speed, [pixels/ms])
-	/*if ((touchpanelPositionX[0] < xEst + 50) && (touchpanelPositionX[0] > xEst -50)) {
+	/*if ((touchpanelPositionX[0] < xEst + 60) && (touchpanelPositionX[0] > xEst -60)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i++) {
 			xDiff = touchpanelPositionX[i + 1] - touchpanelPositionX[i];
-			dX += ((6 - 2 * i) * xDiff) / milliseconds;
+			dX -= ((3.5 - 1.5 * i) * xDiff) / milliseconds;
 		}
 	}*/
 
-	if ((touchpanelPositionY[0] < yEst + 40) && (touchpanelPositionY[0] > yEst - 40)) {
+	if ((touchpanelPositionY[0] < yEst + 50) && (touchpanelPositionY[0] > yEst - 50)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i++) {
 			yDiff = touchpanelPositionY[i + 1] - touchpanelPositionY[i];
-			dY += ((6 - 2 * i) * yDiff) / milliseconds;
+			dY -= ((4 - 1.2 * i) * yDiff) / milliseconds;
 		}
 	}
 
 
-	if (pX + dX > 25) {
-		pX = 15;
+	if (pX + dX > 20) {
+		pX = 10;
 		dX = 10;
-	} else if (pX + dX < -25) {
-		pX = -15;
+	} else if (pX + dX < -20) {
+		pX = -10;
 		dX = -10;
 	}
-	if (pY + dY > 25) {
+	if (pY + dY > 20) {
 		pY = 15;
 		dY = 10;
-	} else if (pY + dY < -25) {
-		pY = -15;
+	} else if (pY + dY < -20) {
+		pY = -10;
 		dY = -10;
 	}
 
@@ -105,7 +105,7 @@ inline void moveToPoint(int xEst, int yEst) {
 		// Register the new value in the db
 		writeDatabaseXY(touchpanelPositionX[0], touchpanelPositionY[0]);
 		
-		int dev = 3;
+		int dev = 15;
 		// Single values, that don't match, get ignored
 		if ((!(((touchpanelPositionX[0] < touchpanelPositionX[1] - 20) || (touchpanelPositionX[0] > touchpanelPositionX[1] + 20) || (touchpanelPositionY[0] < touchpanelPositionY[1] - 20) || (touchpanelPositionY[0] > touchpanelPositionY[1] + 20))))
 		// And if the trend is staying the same
@@ -116,7 +116,10 @@ inline void moveToPoint(int xEst, int yEst) {
 			calculatePWMSignal(xEst, yEst, milliseconds);
 		} // If the previous-previous value (--> milliseconds * 3 (a bit less important)) matches with the new one
 		else if (!(((touchpanelPositionX[0] < touchpanelPositionX[2] - 40) || (touchpanelPositionX[0] > touchpanelPositionX[2] + 40) || (touchpanelPositionY[0] < touchpanelPositionY[2] - 40) || (touchpanelPositionY[0] > touchpanelPositionY[2] + 40)))) {
-			calculatePWMSignal(xEst, yEst, milliseconds * 3);
+			// I don't know why, but this works way better...?
+			touchpanelPositionX[0] = touchpanelPositionX[1];
+			touchpanelPositionY[0] = touchpanelPositionY[1];
+			calculatePWMSignal(xEst, yEst, milliseconds * 2);
 		}
 	}
 }

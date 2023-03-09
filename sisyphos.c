@@ -47,7 +47,7 @@ int main() {
 		if ((mode == 1) || (mode == 2) || (mode == 3)) {
 			moveToAngle(xEst, yEst);
 		} else {
-			moveToPoint(150, 110);
+			moveToPoint(152, 114);
 		}
 	}
 	killDBconnection();
