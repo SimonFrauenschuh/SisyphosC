@@ -12,14 +12,14 @@ int errorCode = 0;
 #define HERTZ 60
 // Configuration Simon
 // Servo bottom left
-#define CHANNEL0_MID 520
+/*#define CHANNEL0_MID 520
 // Servo bottom right
 #define CHANNEL1_MID 468
 // Servo top left
 #define CHANNEL2_MID 363
 // Servo top right
 #define CHANNEL3_MID 400
-
+*/
 // Configuration Sebastian
 // Servo bottom left
 /*#define CHANNEL0_MID 500
@@ -30,6 +30,16 @@ int errorCode = 0;
 // Servo top right
 #define CHANNEL3_MID 425
 */
+// Configuration Arduino groß
+// Servo bottom left
+#define CHANNEL0_MID 500
+// Servo bottom right
+#define CHANNEL1_MID 448
+// Servo top left
+#define CHANNEL2_MID 363
+// Servo top right
+#define CHANNEL3_MID 380
+
 // First initial setup (connection) for the Servos
 void firstSetupServo() {
 	printf("Connecting to Servos (I2C)...\n");
@@ -38,7 +48,7 @@ void firstSetupServo() {
 
 	// Setup with pinbase 300 and i2c location 0x41
 	// 0x41 setup Simon; 0x40 setup Sebastian
-	connectionServo = pca9685Setup(PIN_BASE, 0x41, HERTZ);
+	connectionServo = pca9685Setup(PIN_BASE, 0x40, HERTZ);
 	if (connectionServo < 0) {
 		errorCode = 1;
 		fprintf(stderr, "---ERROR 1--- Connection Servo failure");

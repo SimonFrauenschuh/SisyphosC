@@ -40,7 +40,7 @@ int main() {
 	printf("====================\nInitialization finished\n====================\n\n");
 
 	while (errorCode == 0) {
-		mode = 0;//2;//readDatabase("result", "mode");
+		mode = readDatabase("result", "mode");
 		xEst = readDatabase("postouchpanel", "xest");
 		yEst = readDatabase("postouchpanel", "yest");
 

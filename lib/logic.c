@@ -26,7 +26,7 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 
 	xDiff = touchpanelPositionX[0] - xEst;
 	// Add a offset and calculate the p-Part (Position, [pixels])
-	//pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
+	pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
 
 
 	yDiff = touchpanelPositionY[0] - yEst;
@@ -34,12 +34,12 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 	
 
 	// Calculate the "D" Part of the PD-Controller (Speed, [pixels/ms])
-	/*if ((touchpanelPositionX[0] < xEst + 60) && (touchpanelPositionX[0] > xEst -60)) {
+	if ((touchpanelPositionX[0] < xEst + 60) && (touchpanelPositionX[0] > xEst -60)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i++) {
 			xDiff = touchpanelPositionX[i + 1] - touchpanelPositionX[i];
 			dX -= ((3.5 - 1.5 * i) * xDiff) / milliseconds;
 		}
-	}*/
+	}
 
 	if ((touchpanelPositionY[0] < yEst + 50) && (touchpanelPositionY[0] > yEst - 50)) {
 		for (int i = 0; i < (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i++) {
@@ -64,10 +64,11 @@ inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
 		dY = -7.5;
 	}
 
+	printf("X: %d, %d\n", (int)pX, (int)dX);
 	printf("Y: %d, %d\n", (int)pY, (int)dY);
 
-	pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (int)(pY + dY));
-	pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (int)(pY + dY));
+	pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (int)(pY * dY));
+	pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (int)(pY * dY));
 	pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (int)(pX + dX));
 	pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (int)(pX + dX));
 
