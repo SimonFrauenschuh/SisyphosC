@@ -71,7 +71,7 @@ int writeDatabaseXY(int xReal, int yReal) {
     char valueString[4];
     snprintf(valueString, 4, "%i", xReal);
     strcat(updateXY, valueString);
-    strcat(updateXY, ", yreal=);
+    strcat(updateXY, ", yreal=");
     snprintf(valueString, 4, "%i", yReal);
     strcat(updateXY, valueString);
     strcat(updateXY, " WHERE id=(select max(id) from postouchpanel)");

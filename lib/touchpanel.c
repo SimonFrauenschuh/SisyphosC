@@ -117,8 +117,10 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     // length 304mm , width 228mm
     // Configuration Sebastian & Simon
     //*posX = (channel2 - 0.2) * 1.87 * 304 / 3.3;
-    // Configuration Schule Arduino groß
-    *posX = (channel2 + 0.2) * 1.87 * 304 / 3.3;
+    // Configuration Schule Arduino Uno
+    //*posX = (channel2 + 0.2) * 1.87 * 304 / 3.3;
+    // Configuration Schule Arduino Nano
+    *posX = (channel2 + 0.22) * 1.92 * 304 / 3.3;
 
     // Check if the value is correct and if there is a need: correct
     // No error is given because of the wide range of different:
@@ -141,7 +143,7 @@ void getTouchpanelPositionADC(int* posX, int* posY) {
     // 7) Calculate the distance to the edges of the touchpanel
     // Configuration Simon & Sebastian
     //*posY = -39 + (channel0 - 0.2) * 1.4 * 228 / 3.3;
-    // Configuration Schule Arduino groß
+    // Configuration Schule Arduino Uno
     *posY = (channel0 + 0.2) * 1.4 * 228 / 3.3;
     
     // Check if the value is correct and if there is a need: correct

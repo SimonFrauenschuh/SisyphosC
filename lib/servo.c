@@ -30,15 +30,25 @@ int errorCode = 0;
 // Servo top right
 #define CHANNEL3_MID 425
 */
-// Configuration Arduino groß
+// Configuration Arduino Uno
 // Servo bottom left
-#define CHANNEL0_MID 500
+/*#define CHANNEL0_MID 500
 // Servo bottom right
 #define CHANNEL1_MID 448
 // Servo top left
 #define CHANNEL2_MID 363
 // Servo top right
 #define CHANNEL3_MID 380
+*/
+// Configuration Arduino Nano
+// Servo bottom left
+#define CHANNEL0_MID 430
+// Servo bottom right
+#define CHANNEL1_MID 478
+// Servo top left
+#define CHANNEL2_MID 322
+// Servo top right
+#define CHANNEL3_MID 353
 
 // First initial setup (connection) for the Servos
 void firstSetupServo() {
