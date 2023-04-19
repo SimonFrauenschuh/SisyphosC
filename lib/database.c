@@ -66,20 +66,16 @@ int writeDatabaseXY(int xReal, int yReal) {
         killDBconnection();
     }
 
-    // Modify the real x-value of the highest id
-    char updateX[85] = "UPDATE postouchpanel SET xreal=";
+    // Modify the real x- & y-value of the highest id
+    char updateXY[85] = "UPDATE postouchpanel SET xreal=";
     char valueString[4];
     snprintf(valueString, 4, "%i", xReal);
-    strcat(updateX, valueString);
-    strcat(updateX, " WHERE id=(select max(id) from postouchpanel)");
-    res = PQexec(conn, updateX);
-
-    // Modify the real y-value of the highest id
-    char updateY[85] = "UPDATE postouchpanel SET yreal=";
+    strcat(updateXY, valueString);
+    strcat(updateXY, ", yreal=);
     snprintf(valueString, 4, "%i", yReal);
-    strcat(updateY, valueString);
-    strcat(updateY, " WHERE id=(select max(id) from postouchpanel)");
-    res = PQexec(conn, updateY); 
+    strcat(updateXY, valueString);
+    strcat(updateXY, " WHERE id=(select max(id) from postouchpanel)");
+    res = PQexec(conn, updateXY);
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         printf("UPDATE command failed\n");        
