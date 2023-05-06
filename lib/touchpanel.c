@@ -1,3 +1,11 @@
+/* Copyright (C) 2021 Simon Frauenschuh - All Rights Reserved
+ * You may use and / or modify this code in
+ * terms of private use.
+ * Any caused damage or misbehaviour of any components are
+ * under the responsibility of the user and and the editor
+ * cannot be prosecuted for it
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
