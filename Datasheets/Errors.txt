@@ -1,0 +1,10 @@
+Error Code 0: No Error occured
+
+Error Code 1: A connection to the Servo-Driver wasn't able to be created
+Error Code 2: A connection to the Gyroscope wasn't able to be created
+Error Code 3: A connection to the Touchpanel wasn't able to be created
+Error Code 4: A connection to the Database wasn't able to be created
+Error Code 5: Gyroscope Measurement and suggested Position don't match
+Error Code 6: User isn't root - switch user
+Error Code 7: Unknown Device (ADC) / Device (ADC) can't be read
+Error Code 8: No data from db received

@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "logic.c": "cpp"
+        "logic.c": "cpp",
+        "i2c-dev.h": "c",
+        "ioctl.h": "c",
+        "pca9685.h": "c",
+        "servo.h": "c",
+        "wiringpi.h": "c"
     }
 }

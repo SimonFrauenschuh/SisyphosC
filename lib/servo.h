@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 Simon Frauenschuh & Philip Jessner - All Rights Reserved
+/* Copyright (C) 2021 Simon Frauenschuh & Sebastian Haider - All Rights Reserved
  * You may use and / or modify this code in
  * terms of private use.
  * Any caused damage or misbehaviour of any components are
@@ -15,9 +15,6 @@ extern int errorCode;
 
 // First initial setup (connection) for the Servos
 void firstSetupServo();
-
-// Reads current position of the Servo
-int readServoPosition(int channel);
 
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
 int calculateServoPWMSignal(int channel, double degree);

@@ -1,3 +1,11 @@
+/* Copyright (C) 2021 Simon Frauenschuh & Sebastian Haider - All Rights Reserved
+ * You may use and / or modify this code in
+ * terms of private use.
+ * Any caused damage or misbehaviour of any components are
+ * under the responsibility of the user and and the editor
+ * cannot be prosecuted for it
+ */
+
 #include <wiringPi.h>
 #include "pca9685.h"
 #include <stdio.h>
@@ -9,14 +17,46 @@ int errorCode = 0;
 #pragma once
 
 #define PIN_BASE 300
-#define CHANNEL0_MIN 140
-#define CHANNEL0_DIFF 510
-// At home
-#define CHANNEL1_MIN 145
-// In school
-//#define CHANNEL1_MIN 146
-#define CHANNEL1_DIFF 523
 #define HERTZ 60
+// Configuration Simon
+// Servo bottom left
+/*#define CHANNEL0_MID 520
+// Servo bottom right
+#define CHANNEL1_MID 468
+// Servo top left
+#define CHANNEL2_MID 363
+// Servo top right
+#define CHANNEL3_MID 400
+*/
+// Configuration Sebastian
+// Servo bottom left
+/*#define CHANNEL0_MID 500
+// Servo bottom right
+#define CHANNEL1_MID 440
+// Servo top left
+#define CHANNEL2_MID 345
+// Servo top right
+#define CHANNEL3_MID 425
+*/
+// Configuration Arduino Uno
+// Servo bottom left
+/*#define CHANNEL0_MID 500
+// Servo bottom right
+#define CHANNEL1_MID 448
+// Servo top left
+#define CHANNEL2_MID 363
+// Servo top right
+#define CHANNEL3_MID 380
+*/
+// Configuration Arduino Nano
+// Servo bottom left
+#define CHANNEL0_MID 430
+// Servo bottom right
+#define CHANNEL1_MID 478
+// Servo top left
+#define CHANNEL2_MID 322
+// Servo top right
+#define CHANNEL3_MID 353
 
 // First initial setup (connection) for the Servos
 void firstSetupServo() {
@@ -25,7 +65,8 @@ void firstSetupServo() {
 	wiringPiSetup();
 
 	// Setup with pinbase 300 and i2c location 0x41
-	connectionServo = pca9685Setup(PIN_BASE, 0x41, HERTZ);
+	// 0x41 setup Simon; 0x40 setup Sebastian
+	connectionServo = pca9685Setup(PIN_BASE, 0x40, HERTZ);
 	if (connectionServo < 0) {
 		errorCode = 1;
 		fprintf(stderr, "---ERROR 1--- Connection Servo failure");
@@ -36,35 +77,34 @@ void firstSetupServo() {
 	}
 }
 
-// Reads current position of the Servo
-int readServoPosition(int channel) {
-	int oldSet;
-	// Add some extra value to increase wait duration for smaller movements (e.g. 40-->42)
-	if (channel == 0) {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL0_MIN / 1.0;
-	} else {
-		oldSet = (digitalRead(PIN_BASE + channel) & 0xFFF) + CHANNEL1_MIN  / 1.0;
-	}
-	return oldSet;
-}
-
 // Calculates individually for each Servo the needed PWM-Signal for the given angle
 int calculateServoPWMSignal(int channel, double degree) {
-	// Add 90 to "degree" to make function more user-friendly (range from -90 to 90 instead of 0 to 180)
-	degree += 90.0;
+	degree *= 2.4;
 	int move;
 	// Logik to find out which channel to use (servo-specific parameters) and calculation of PWM-signal
 	if (channel == 0) {
 		if (degree == 0.0) {
-			move = CHANNEL0_MIN;
+			move = CHANNEL0_MID;
 		} else {
-			move = (int)(CHANNEL0_DIFF * (degree / 180) + CHANNEL0_MIN);
+			move = (int)(CHANNEL0_MID - degree);
+		}
+	} else if (channel == 1) {
+		if (degree == 0.0) {
+			move = CHANNEL1_MID;
+		} else {
+			move = (int)(CHANNEL1_MID + degree);
+		}
+	} else if (channel == 2) {
+		if (degree == 0.0) {
+			move = CHANNEL2_MID;
+		} else {
+			move = (int)(CHANNEL2_MID + degree);
 		}
 	} else {
 		if (degree == 0.0) {
-			move = CHANNEL1_MIN;
+			move = CHANNEL3_MID;
 		} else {
-			move = (int)(CHANNEL1_DIFF * (degree / 180) + CHANNEL1_MIN);
+			move = (int)(CHANNEL3_MID - degree);
 		}
 	}
 	return move;
@@ -76,28 +116,14 @@ void setServoDegree(int channel, double degree) {
 	if (channel == 16) {
 		setServoDegree(0, degree);
 		setServoDegree(1, degree);
+		setServoDegree(2, degree);
+		setServoDegree(3, degree);
 	} else {
 		// Calculate the PWM-Signal
 		int move = calculateServoPWMSignal(channel, degree);
 	
-		// Read the previous set from Controller to calculate later the duration for waiting, until the servo is in the right position
-		int oldSet = readServoPosition(channel);
-	
 		// Move the Servo
 		pwmWrite(PIN_BASE + channel, move);
-	
-		// Calculate the waiting duration
-		int diffSet;
-		if (channel == 0) {
-			diffSet = (move - oldSet) * 2.2;
-		} else {
-			diffSet = (move - oldSet) * 2;
-		}
-		if (diffSet > 0) {
-			delay(diffSet);
-		} else {
-			delay(-diffSet);
-		}
 	}
 }
 
@@ -106,5 +132,5 @@ void setServoNull() {
 	printf("Setting Servos to Starting Point...\n");
 	// Set Pin = 16 to set all Channels / Servos
 	setServoDegree(16, 0);
-	delay(500);
+	delay(200);
 }

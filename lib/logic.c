@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 Simon Frauenschuh & Philip Jessner - All Rights Reserved
+/* Copyright (C) 2021 Simon Frauenschuh & Sebastian Haider - All Rights Reserved
  * You may use and / or modify this code in
  * terms of private use.
  * Any caused damage or misbehaviour of any components are
@@ -14,16 +14,69 @@
 
 #pragma once
 
+int touchpanelPositionX[3] = {0}, touchpanelPositionY[3] = {0};
 
-	int touchpanelPositionX, touchpanelPositionY;
-	int touchpanelPositionXOld, touchpanelPositionYOld;
+
+inline void calculatePWMSignal(int xEst, int yEst, int milliseconds) {
+	int8_t xDiff, yDiff;
+	double pX = 0, pY = 0;
+	double dX = 0, dY = 0;
+	
+	printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX[0], touchpanelPositionY[0]);
+
+	xDiff = touchpanelPositionX[0] - xEst;
+	// Add a offset and calculate the p-Part (Position, [pixels])
+	pX = (xDiff > 0) ? (5 + xDiff / 25) : (-5 + xDiff / 25);
+
+
+	yDiff = touchpanelPositionY[0] - yEst;
+	pY = (yDiff > 0) ? (4 + yDiff / 25) : (-4 + yDiff / 25);
+	
+
+	// Calculate the "D" Part of the PD-Controller (Speed, [pixels/ms])
+	if ((touchpanelPositionX[0] < xEst + 60) && (touchpanelPositionX[0] > xEst -60)) {
+		for (int i = 0; i < (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i++) {
+			xDiff = touchpanelPositionX[i + 1] - touchpanelPositionX[i];
+			dX -= ((3.5 - 1.5 * i) * xDiff) / milliseconds;
+		}
+	}
+
+	if ((touchpanelPositionY[0] < yEst + 50) && (touchpanelPositionY[0] > yEst - 50)) {
+		for (int i = 0; i < (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i++) {
+			yDiff = touchpanelPositionY[i + 1] - touchpanelPositionY[i];
+			dY -= ((3.4 - 1.2 * ((double) i)) * yDiff) / (double) milliseconds;
+		}
+	}
+
+
+	if (pX + dX > 15.) {
+		pX = 7.5;
+		dX = 7.5;
+	} else if (pX + dX < -15.) {
+		pX = -7.5;
+		dX = -7.5;
+	}
+	if (pY + dY > 15.) {
+		pY = 7.5;
+		dY = 7.5;
+	} else if (pY + dY < -15.) {
+		pY = -7.5;
+		dY = -7.5;
+	}
+
+	printf("X: %d, %d\n", (int)pX, (int)dX);
+	printf("Y: %d, %d\n", (int)pY, (int)dY);
+
+	pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (int)(pY * dY));
+	pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (int)(pY * dY));
+	pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (int)(pX + dX));
+	pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (int)(pX + dX));
+
+	
+}
 
 // Logic for mode single-point (define a point, where the ball should move to)
-void moveToPoint(int xEst, int yEst) {
-	int xDiff, yDiff;
-	// Values for the PD-Regulator
-	int dX = 0, dY = 0, pX = 0, pY = 0;
-
+inline void moveToPoint(int xEst, int yEst) {
 	// Used for the "D" Part of the PD-Controller
 	struct timeval begin, end;
 	long milliseconds;
@@ -31,73 +84,51 @@ void moveToPoint(int xEst, int yEst) {
 	// Start measuring time
     gettimeofday(&begin, 0);
 
-	touchpanelPositionXOld = touchpanelPositionX;
-	touchpanelPositionYOld = touchpanelPositionY;
+	// Delete the last value and shift the others
+	for (int i = (sizeof(touchpanelPositionX) / sizeof(int)) - 1; i > 0 ; i--) {
+		touchpanelPositionX[i] = touchpanelPositionX[i - 1];
+	}
+	for (int i = (sizeof(touchpanelPositionY) / sizeof(int)) - 1; i > 0 ; i--) {
+		touchpanelPositionY[i] = touchpanelPositionY[i - 1];
+	}
+	
+	getTouchpanelPositionADC(&touchpanelPositionX[0], &touchpanelPositionY[0]);
 
-	getTouchpanelPositionADC(&touchpanelPositionX, &touchpanelPositionY);
-	//getTouchpanelPositionUSB(&touchpanelPositionX, &touchpanelPositionY);
-	//writeDatabaseXY(touchpanelPositionX, touchpanelPositionY);
+	// Stop measuring time and calculate the elapsed time
+	gettimeofday(&end, 0);
+	milliseconds = (end.tv_usec - begin.tv_usec) / 1000;
+	// Start measuring time
+	gettimeofday(&begin, 0);
 
 	// Control, if there isn't a misread value from the touchpad
 	// Sometimes, the touchpanel has a state, where "0" is sent for the x-Coordinate, no matter, what the real value is
-	if (touchpanelPositionX != 0 && touchpanelPositionY != 0) {
+	// Also ignore when it took too long (--> negative values that'd destroy the controllers algorithm)
+	if (touchpanelPositionX[0] != 0 && touchpanelPositionX[0] != 505 && touchpanelPositionY[0] != 0 && milliseconds > 1) {
+		
+		// Register the new value in the db
+		writeDatabaseXY(touchpanelPositionX[0], touchpanelPositionY[0]);
+		
+		int dev = 15;
 		// Single values, that don't match, get ignored
-		if (!((touchpanelPositionX < touchpanelPositionXOld * 0.9) || (touchpanelPositionX > touchpanelPositionXOld * 1.1) || (touchpanelPositionY < touchpanelPositionYOld * 0.9) || (touchpanelPositionY > touchpanelPositionYOld * 1.1))) {
-			printf("xPosition: %d	|	yPosition: %d\n", touchpanelPositionX, touchpanelPositionY);
-			
-			// Stop measuring time and calculate the elapsed time
-			gettimeofday(&end, 0);
-			milliseconds = (end.tv_usec - begin.tv_usec) / 1000;
-			// Start measuring time
-			gettimeofday(&begin, 0);
-
-			xDiff = touchpanelPositionX - xEst;
-			// Add a offset and calculate the p-Part
-			pX = (xDiff > 0) ? (4 + xDiff / 15) : (-4 + xDiff / 15);
-
-
-			yDiff = touchpanelPositionY - yEst;
-			pY = (yDiff > 0) ? (5 + yDiff / 10) : (-5 + yDiff / 10);
-			
-			// Calculate the "D" Part of the PD-Controller
-			/*if (xDiff > 50 && xDiff < 50) {
-				dX = -15 * (touchpanelPositionXOld - touchpanelPositionX) / milliseconds;
-			}*/
-			xDiff = touchpanelPositionXOld - touchpanelPositionX;
-			//dX = (xDiff < 0) ? (2 + 16 * xDiff / milliseconds) : (-2 - 16 * xDiff / milliseconds); 
-			dX = (xDiff < 0) ? (-2 -16 * xDiff / milliseconds) : (2 + 16 * xDiff / milliseconds); 
-
-			yDiff = touchpanelPositionYOld - touchpanelPositionY;
-			dY = (yDiff < 0) ? (2 - 15 * yDiff / milliseconds) : (-2 - 15 * yDiff / milliseconds);
-							
-			if (pX + dX > 25) {
-				pX = 15;
-				dX = 10;
-			} else if (pX + dX < -25) {
-				pX = -15;
-				dX = -10;
-			}
-			if (pY + dY > 20) {
-				pY = 15;
-				dY = 10;
-			} else if (pY + dY < -20) {
-				pY = -15;
-				dY = -10;
-			}
-
-			pwmWrite(PIN_BASE + 0, CHANNEL0_MID - (pY + dY));
-			pwmWrite(PIN_BASE + 1, CHANNEL1_MID + (pY + dY));
-			pwmWrite(PIN_BASE + 2, CHANNEL2_MID + (pX + dX));
-			pwmWrite(PIN_BASE + 3, CHANNEL3_MID - (pX + dX));
-
-			printf("X: %d, %d\n", pX, dX);
-			printf("Y: %d, %d\n\n", pY, dY);
+		if ((!(((touchpanelPositionX[0] < touchpanelPositionX[1] - 20) || (touchpanelPositionX[0] > touchpanelPositionX[1] + 20) || (touchpanelPositionY[0] < touchpanelPositionY[1] - 20) || (touchpanelPositionY[0] > touchpanelPositionY[1] + 20))))
+		// And if the trend is staying the same
+		&& (((touchpanelPositionX[2] < touchpanelPositionX[1] + dev) && (touchpanelPositionX[1] < touchpanelPositionX[0] + dev))
+		|| ((touchpanelPositionX[2] > touchpanelPositionX[1] - dev) && (touchpanelPositionX[1] > touchpanelPositionX[0] - dev)))
+		&& (((touchpanelPositionY[2] < touchpanelPositionY[1] + dev) && (touchpanelPositionY[1] < touchpanelPositionY[0] + dev))
+		|| ((touchpanelPositionY[2] > touchpanelPositionY[1] - dev) && (touchpanelPositionY[1] > touchpanelPositionY[0] - dev)))) {
+			calculatePWMSignal(xEst, yEst, milliseconds);
+		} // If the previous-previous value (--> milliseconds * 3 (a bit less important)) matches with the new one
+		else if (!(((touchpanelPositionX[0] < touchpanelPositionX[2] - 40) || (touchpanelPositionX[0] > touchpanelPositionX[2] + 40) || (touchpanelPositionY[0] < touchpanelPositionY[2] - 40) || (touchpanelPositionY[0] > touchpanelPositionY[2] + 40)))) {
+			// I don't know why, but this works way better...?
+			touchpanelPositionX[0] = touchpanelPositionX[1];
+			touchpanelPositionY[0] = touchpanelPositionY[1];
+			calculatePWMSignal(xEst, yEst, milliseconds * 2);
 		}
 	}
 }
 
 // Synchronize with the angle, given by the database (the phones gyroscope)
-void moveToAngle(int xEst, int yEst) {
+inline void moveToAngle(int xEst, int yEst) {
 	xEst /= 2;
 	yEst /= 2;
 	if (xEst > 20) {

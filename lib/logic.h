@@ -1,4 +1,4 @@
-/* Copyright (C) 2021 Simon Frauenschuh & Philip Jessner - All Rights Reserved
+/* Copyright (C) 2021 Simon Frauenschuh & Sebastian Haider - All Rights Reserved
  * You may use and / or modify this code in
  * terms of private use.
  * Any caused damage or misbehaviour of any components are
@@ -11,3 +11,9 @@
 
 // Logic for mode single-point (define a point, where the ball should move to)
 void moveToPoint(int xEst, int yEst);
+
+// Synchronize with the angle, given by the database (the phones gyroscope)
+void moveToAngle(int xEst, int yEst);
+
+// Function to calculate the parameters for the regulator
+void calculatePWMSignal(int xEst, int yEst, int milliseconds);
