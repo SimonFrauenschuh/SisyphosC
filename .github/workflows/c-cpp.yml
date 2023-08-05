@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: install libraries
+    - run: sudo apt install wiringpi
     - name: make
       run: make
     - name: make clean
