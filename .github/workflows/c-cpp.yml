@@ -15,7 +15,7 @@ jobs:
 #    - name: install libraries
 #      run: sudo apt install wiringpi
     - uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
+      with:
           packages: wiringpi
           version: 2.61
     - name: check for library
