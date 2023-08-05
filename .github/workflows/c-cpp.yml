@@ -12,8 +12,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: install libraries
-      run: sudo apt install wiringpi
+#    - name: install libraries
+#      run: sudo apt install wiringpi
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: wiringpi
+          version: 2.61
     - name: check for library
       run: ls -l /usr/include
     - name: make
