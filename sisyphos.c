@@ -19,10 +19,6 @@
 #include <pthread.h>
 
 int main() {
-
-	// Check if the user is root & connect to touchpanel (USB)
-	//checkUser();
-	//firstSetupTouchpanelUSB();
 	firstSetupTouchpanelADC(0x48);
 
 	// Connect ato Servos
@@ -41,8 +37,8 @@ int main() {
 
 	while (errorCode == 0) {
 		mode = readDatabase("result", "mode");
-		xEst = readDatabase("postouchpanel", "xest");
-		yEst = readDatabase("postouchpanel", "yest");
+		xEst = readDatabase("position", "xest");
+		yEst = readDatabase("position", "yest");
 
 		if ((mode == 1) || (mode == 2) || (mode == 3)) {
 			moveToAngle(xEst, yEst);

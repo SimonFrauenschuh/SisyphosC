@@ -56,7 +56,7 @@ int readDatabase(char *tableName, char *rowName) {
     return result;
 }
 
-// To register a value to the last row of the table postouchpanel
+// To register a value to the last row of the table position
 int writeDatabaseXY(int xReal, int yReal) {
     PGresult *res = PQexec(conn, "BEGIN");    
     
@@ -67,14 +67,14 @@ int writeDatabaseXY(int xReal, int yReal) {
     }
 
     // Modify the real x- & y-value of the highest id
-    char updateXY[85] = "UPDATE postouchpanel SET xreal=";
+    char updateXY[85] = "UPDATE position SET xreal=";
     char valueString[4];
     snprintf(valueString, 4, "%i", xReal);
     strcat(updateXY, valueString);
     strcat(updateXY, ", yreal=");
     snprintf(valueString, 4, "%i", yReal);
     strcat(updateXY, valueString);
-    strcat(updateXY, " WHERE id=(select max(id) from postouchpanel)");
+    strcat(updateXY, " WHERE id=(select max(id) from position)");
     res = PQexec(conn, updateXY);
     
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
